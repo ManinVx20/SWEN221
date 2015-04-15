@@ -42,7 +42,8 @@ public class Interpreter {
 		// skipWhiteSpace(); // in case there are white spaces
 		// skipNonAlphaChar(line); // in case there are non alphanumeric characters
 		String cmd = readWord(line); // first word in line. Represents the command sent to the interpreter could be a vriable: x,y,bla or a cmd: fill, draw, poo, or could be a new shape: ([, [
-
+		System.out.println(cmd);
+		
 		if (cmd.equals("fill")) { // if is a filled shape
 			// System.out.println("Fill cmd");
 			skipWhiteSpace(line); // in case there are white spaces
@@ -55,6 +56,8 @@ public class Interpreter {
 				if (shapes.containsKey(var)) { // check if variable is valid
 					Color color = readColor(line); // get the color the shape
 					fillShape(shapes.get(var), color, canvas);// fillShape to variable
+				} else {
+					throw new IllegalArgumentException();
 				}
 			}
 
@@ -70,6 +73,8 @@ public class Interpreter {
 				if (shapes.containsKey(var)) { // check if variable is valid
 					Color color = readColor(line); // get the color the shape
 					drawShape(shapes.get(var), color, canvas);// fillShape to variable
+				} else {
+					throw new IllegalArgumentException();
 				}
 			}
 
@@ -78,7 +83,16 @@ public class Interpreter {
 			line.replace(")", "");
 
 		} else if (cmd.matches("^[a-zA-Z]$") && shapes.containsKey(cmd)) { // re-define an existing shape
-			// System.out.println("Re-assign a shape operation to a variable");
+			
+
+/// SHOULD ADD a method here to check if the part of string before the = sign equals to one word only. if is two bits or more, throw invalidArgument
+			
+			
+//			String operation = line.split("=")[1]; // fetch the portion of line with the operation
+//			String operandA = operation.split("\\" + op + "")[0]; // split again to find the two operands
+//			String operandB = operation.split("\\" + op + "")[1];
+			
+			 System.out.println(line);
 			skipWhiteSpace(line); // in case there are white spaces
 			if (line.matches(".*\\+.*")) { // attempt union operation
 				// System.out.println("Do Union");
@@ -100,6 +114,7 @@ public class Interpreter {
 			}
 
 		} else if (cmd.matches("^[a-zA-Z]$") && !shapes.containsKey(cmd)) { // cmd matches an alphanumeric char, but is not in the cmd list --> is a new shape
+			System.out.println(line);
 			// System.out.println("New Shape form Array");
 			// skipWhiteSpace(line); // in case there are white spaces
 			String shapeName = cmd;
@@ -162,8 +177,6 @@ public class Interpreter {
 	 */
 	private Shape readShape(String line) {
 
-		// skipWhiteSpace(string); // in case there are white spaces
-
 		Pattern p = Pattern.compile("\\[(.*?)\\]"); // find the first occurance of a new array, if any
 		Matcher m = p.matcher(line);
 		if (m.find()) { // there is at least one new shape -> adding new shape
@@ -172,68 +185,13 @@ public class Interpreter {
 			for (int i = 0; i < shapeArray.length; i++) {
 				shapeArray[i] = shapeArray[i].replace(" ", ""); // remove white spaces
 			}
-			if (shapeArray.length == 4) { // the array has the right length
-				// System.out.println("Successfully generated a new shape");
-				return new Rectangle(Integer.parseInt(shapeArray[0]), Integer.parseInt(shapeArray[1]), Integer.parseInt(shapeArray[2]), Integer.parseInt(shapeArray[3]));
+			if (shapeArray.length == 4 && Integer.parseInt(shapeArray[0]) >= 0 && Integer.parseInt(shapeArray[1]) >= 0 && Integer.parseInt(shapeArray[2]) >= 0 && Integer.parseInt(shapeArray[3]) >= 0) { // the array has the right length
+					return new Rectangle(Integer.parseInt(shapeArray[0]), Integer.parseInt(shapeArray[1]), Integer.parseInt(shapeArray[2]), Integer.parseInt(shapeArray[3]));
+				} else {
+					throw new IllegalArgumentException();
+				}
 			}
-		}
 		return null;
-
-		// if (allMatches.size() > 0) {
-		// for (String newArray : allMatches) {
-		// System.out.println(newArray);
-		// String[] shapeArray = newArray.split(",");
-		// for (int i=0; i < shapeArray.length; i++) {
-		// shapeArray[i] = shapeArray[i].replace(" ",""); // remove white spaces
-		// shapeArray[i] = shapeArray[i].replace("[",""); // remove brackets
-		// shapeArray[i] = shapeArray[i].replace("]",""); // remove brackets
-		// System.out.println(shapeArray[i]);
-		// //
-		// }
-		// // if (shapeArray.length == 4) { // the array has the right length
-		// // return new Rectangle(Integer.parseInt(shapeArray[0]), Integer.parseInt(shapeArray[1]), Integer.parseInt(shapeArray[2]),
-		// Integer.parseInt(shapeArray[3]));
-		// // }
-		// }
-		// }
-		// }
-
-		// for (String newArray : allMatches) { // iterate though all the new shapes
-		// }
-		// String shapeString = m.group();
-		// System.out.println(shapeString);
-		// String[] shapeArray = shapeString.split(",");
-		// for (int i=0; i < shapeArray.length; i++) {
-		// shapeArray[i] = shapeArray[i].replace(" ",""); // remove white spaces
-		// }
-		// if (shapeArray.length == 4) { // the array has the right length
-		// return new Rectangle(Integer.parseInt(shapeArray[0]), Integer.parseInt(shapeArray[1]), Integer.parseInt(shapeArray[2]),
-		// Integer.parseInt(shapeArray[3]));
-		// }
-		// }
-
-		// FOUND THE OCCURRANCE OF A NEW SHAPE... NEED TO READ THE SHAPE AND THEN TEST IF THERE ARE 2 SHAPES IN THE interpreter Test
-
-		// while (index < line.length() && line.charAt(index) != '[') { // move pointer forward
-		// index++;
-		// }
-		//
-		//
-		// int indStart = ++index; // set the beginning of the num array and skip this char
-		// int indEnd = indStart; // set the end of the num array
-		// while (index < line.length() && line.charAt(index) != ']') {
-		// indEnd = ++index;
-		// }
-		// // System.out.printf("READSHAPE ->\t Index start: %d\tIndex end: %d\t Array: %s\n", indStart, indEnd, input.substring(indStart, indEnd));
-		// String[] shapeArray = line.substring(indStart, indEnd).split(",");
-		// for (int i = 0; i < shapeArray.length; i++) { // remove any white space
-		// shapeArray[i] = shapeArray[i].replace(" ", "");
-		// }
-		// if (shapeArray.length == 4) {
-		// return new Rectangle(Integer.parseInt(shapeArray[0]), Integer.parseInt(shapeArray[1]), Integer.parseInt(shapeArray[2]),
-		// Integer.parseInt(shapeArray[3]));
-		// // }
-		// return null;
 	}
 
 	/**

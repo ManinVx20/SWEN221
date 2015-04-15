@@ -1,18 +1,5 @@
 public class Exercise {
 
-	public static int m1() {
-		return 3;
-		try {
-//			if (true) {
-//			}
-		} catch (Exception e) {
-			return 2;
-		} 
-		finally {
-			return 200;
-		}
-	}
-
 //	public static int m2() {
 //		try {
 //			try {
@@ -30,6 +17,6 @@ public class Exercise {
 
 	public static void main(String[] arg) {
 		// assert (m1() != m2()) : "assertion:" + m1() + "!=" + m2();
-		System.out.println(m1());
+//		System.out.println(m1());
 	}
 }
