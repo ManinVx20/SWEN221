@@ -76,6 +76,8 @@ public class Canvas {
 					"y position cannot be negative!");
 		}
 		if (x >= width) {
+		    System.out.println("X: " + x);
+		    System.out.println("Width: " + width);
 			throw new IllegalArgumentException(
 					"x position exceeds canvas width!");
 		}

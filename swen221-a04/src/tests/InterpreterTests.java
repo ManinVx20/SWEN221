@@ -101,15 +101,15 @@ public class InterpreterTests {
 	@Test public void invalidSyntaxTests() {
 		// This test makes sure that the interpreter throws an appropriate error message
 		String[] inputs = {
-//				"x = [2,2,4,4]\nfill y #0000ff\n",
+				"x = [2,2,4,4]\nfill y #0000ff\n",
 				"x = [2.012,2,4,4]\nfill x #0000ff\n",
-//				"x= [4,4,-2,2]\nfill x #010203\n",				
-//				"x= [4,4,-2,2]\nfill x\n",
-//				"x= [4,4,2,2]\ndraw z\n",
-//				"x = [2,0,5,5]\ny = [0,2,4,5]\ny =  y-z\nfill y #ff0000\n",
-//				"x = [2,0,5,5]\ny = [0,2,4,5]\ny =  (y-x\nfill y #ff0000\n",
-//				"x = [2,0,5]\nfill x #ff0000\n",
-//				"x += [2,0,5,5]\nfill x #ff0000\n",
+				"x= [4,4,-2,2]\nfill x #010203\n",				
+				"x= [4,4,-2,2]\nfill x\n",
+				"x= [4,4,2,2]\ndraw z\n",
+				"x = [2,0,5,5]\ny = [0,2,4,5]\ny =  y-z\nfill y #ff0000\n",
+				"x = [2,0,5,5]\ny = [0,2,4,5]\ny =  (y-x\nfill y #ff0000\n",
+				"x = [2,0,5]\nfill x #ff0000\n",
+				"x += [2,0,5,5]\nfill x #ff0000\n",
 			};		
 				
 		for(int i=0;i!=inputs.length;++i) {
