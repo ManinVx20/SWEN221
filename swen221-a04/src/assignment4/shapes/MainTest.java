@@ -3,7 +3,7 @@ package assignment4.shapes;
 public class MainTest {
 
 	public static void main(String[] args) {
-		Interpreter interp = new Interpreter("x = [2,2,4,4]\ny = [0,0,3,3]\nz = [3,0,6,3]\ny = y + x + z + x + x +y\ndraw y #00ff00\n");
+		Interpreter interp = new Interpreter("x = [20,20,40,40]\ny = [0,0,30,30]\nz = [30,0,60,30]\ny = y + x + z + x + x +y\ndraw y #00ff00\n");
 		Canvas canvas = interp.run();
            canvas.show();
      } 
