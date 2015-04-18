@@ -97,6 +97,24 @@ public class InterpreterTests {
 			
 		testValidInputs(inputs);			
 	}
+	
+	/**
+	 * Some additional test which should pass
+	 */
+	@Test public void additionalTests() {
+		String[][] inputs = {
+				// test for multiple operators and operands (3+)
+				{"x = [2,2,4,4]\ny = [0,0,3,3]\nz = [3,0,6,3]\ny = y + x + z + x \ndraw y #00ff00\n","#00ff00#00ff00#00ff00#00ff00#00ff00#00ff00#00ff00#00ff00#00ff00\n#00ff00#ffffff#ffffff#ffffff#ffffff#ffffff#ffffff#ffffff#00ff00\n#00ff00#00ff00#ffffff#ffffff#ffffff#ffffff#00ff00#00ff00#00ff00\n#ffffff#ffffff#00ff00#ffffff#ffffff#00ff00#ffffff#ffffff#ffffff\n#ffffff#ffffff#00ff00#ffffff#ffffff#00ff00#ffffff#ffffff#ffffff\n#ffffff#ffffff#00ff00#00ff00#00ff00#00ff00#ffffff#ffffff#ffffff\n"},
+				// test for new variable from other two
+				{"x = [2,2,4,4]\ny = [0,0,3,3]\nz = y + x\nfill z #00ff00\n","#00ff00#00ff00#00ff00#ffffff#ffffff#ffffff\n#00ff00#00ff00#00ff00#ffffff#ffffff#ffffff\n#00ff00#00ff00#00ff00#00ff00#00ff00#00ff00\n#ffffff#ffffff#00ff00#00ff00#00ff00#00ff00\n#ffffff#ffffff#00ff00#00ff00#00ff00#00ff00\n#ffffff#ffffff#00ff00#00ff00#00ff00#00ff00\n"},
+				// test with variable names longer than one char
+				{"xa = [2,2,4,4]\nfill xa #00ff00\n","#ffffff#ffffff#ffffff#ffffff#ffffff#ffffff\n#ffffff#ffffff#ffffff#ffffff#ffffff#ffffff\n#ffffff#ffffff#00ff00#00ff00#00ff00#00ff00\n#ffffff#ffffff#00ff00#00ff00#00ff00#00ff00\n#ffffff#ffffff#00ff00#00ff00#00ff00#00ff00\n#ffffff#ffffff#00ff00#00ff00#00ff00#00ff00\n"},
+				{"x = [2,2,4,4]\ny=x\ndraw y #0000ff\n","#ffffff#ffffff#ffffff#ffffff#ffffff#ffffff\n#ffffff#ffffff#ffffff#ffffff#ffffff#ffffff\n#ffffff#ffffff#0000ff#0000ff#0000ff#0000ff\n#ffffff#ffffff#0000ff#ffffff#ffffff#0000ff\n#ffffff#ffffff#0000ff#ffffff#ffffff#0000ff\n#ffffff#ffffff#0000ff#0000ff#0000ff#0000ff\n"}
+		};				
+			
+		testValidInputs(inputs);			
+	}
+
 
 	@Test public void invalidSyntaxTests() {
 		// This test makes sure that the interpreter throws an appropriate error message
@@ -132,7 +150,9 @@ public class InterpreterTests {
 			try {
 				Canvas canvas = new Interpreter(input[0]).run();
 				String output = canvas.toString();
+//				System.out.println(input[1]);
 				if(!input[1].equals(output)) {
+//					System.out.println("RRRRR");
 					System.out.println(output);
 					fail("Incorrect output on input " + i + " : " + input[0]);
 				}
