@@ -2,138 +2,88 @@ package assignment4.shapes;
 
 import java.util.*;
 
+/**
+ * This version of the interpreter not only allows multiple operations between shapes utilising recursion, also, is now implemented so that it will not rely on single lines and white spaces to
+ * tokenise the commands. It also ignore the case of the variables and commands, and has an additional logic to allow commands such as fillx (which contain no spaces between command and variable)
+ * 
+ * @author diego
+ * @version 3.0
+ *
+ */
 public class Interpreter {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	private int index;
 	private Map<String, Shape> shapes;
-	private List<String> cmdList;
-	private String[] lines;
+	private String input;
+	private List<String> keyCmd = new ArrayList<String>();
+	private boolean debug = false;
 
 	public Interpreter(String input) {
-
-		// this.input = input;
 		this.shapes = new HashMap<String, Shape>();
-		lines = input.split("\n");
-		// for (String line : lines) {
-		// System.out.println(line);
-		// }
-		// System.out.println("-----------------------");
+		this.input = input;
+		this.index = 0;
+		this.keyCmd.add("fill");
+		this.keyCmd.add("draw");
 	}
 
 	/**
-	 * This method tokenizes and cleans up from white-spaces an array list which is then used to evaluate each cmd
+	 * main method to run the parsing and generate a canvas
 	 * 
-	 * @return a canvas that shows the result of the input.
+	 * @return a canvas utilised by awt for drawing the recatngles
 	 */
 	public Canvas run() {
-
 		Canvas canvas = new Canvas();
-		for (String line : lines) {
-			index = 0;
-			cmdList = tokenizeLine(line);
-			evaluateLine(canvas);
+		while (index < input.length()) {
+			evaluateNextCommand(canvas);
 		}
 		return canvas;
 	}
 
 	/**
-	 * This methods tokenizes the commands parsed in each line, cleans them from white spaces and assumes a logic for which the elements contains in the array should be part of the same string
+	 * This method evaluates any valid command to fill or draw a new rectangle shape. It relies on eavluate method
 	 * 
-	 * @param line
-	 * @return a clean list of commands
+	 * @param canvas
+	 *            Takes a canvas to draw on
 	 */
-	private List<String> tokenizeLine(String line) {
-
-		List<String> tokenList = new ArrayList<String>();
-		List<String> tokenListClean = new ArrayList<String>();
-
-		// tokenize the elements in each line and adds the to a list of cmd
-		StringTokenizer tokens = new StringTokenizer(line, " =+-[]&()", true);
-		while (tokens.hasMoreElements()) {
-			String token = tokens.nextToken().trim();
-			if (!token.isEmpty()) {
-				tokenList.add(token);
-			}
-		}
-
-		// reformats the array conained in the square brakets as one entry
-		int index = 0;
-		int subIndx = 0;
-		while (index < tokenList.size()) {
-			if (tokenList.get(index).equals("[")) {
-				tokenListClean.add(tokenList.get(index)); // adds [
-				subIndx = index + 1;
-				String arrayString = tokenList.get(subIndx); // add first element of array
-				while (!tokenList.get(++subIndx).equals("]")) {
-					arrayString = arrayString.concat(tokenList.get(subIndx));
-				}
-				tokenListClean.add(arrayString);
-				index = subIndx;
-			} else {
-				tokenListClean.add(tokenList.get(index));
-				index++;
-			}
-		}
-		return tokenListClean;
-	}
-
-	private void evaluateLine(Canvas canvas) {
-
-		if (cmdList.get(0).equals("fill")) { // if is a filled shape
-
-			if (cmdList.get(1).equals("[") && cmdList.get(3).equals("]")) {
-				index = 1;
-				Shape shape = readShape();
+	private void evaluateNextCommand(Canvas canvas) {
+		skipWhiteSpace();
+		String cmd = readWord();
+		if (cmd != null) {
+			if (cmd.equalsIgnoreCase("fill")) { // if is a filled shape
+				if (debug) System.out.println("Phill's command"); // read next word then read shape and color
+				Shape shape = readShape(); // try to read a shape
 				Color color = readColor();
-				fillShape(shape, color, canvas); // draw the canvas
-				index = 4; // move the pointer
-			} else if (shapes.containsKey(cmdList.get(1))) { // fill is assigned to a variable
-				// System.out.println("Reading fill form a variable");
-				String var = cmdList.get(1); // read variable
-				index = 2;
-				Color color = readColor();
-				fillShape(shapes.get(var), color, canvas);// fillShape to variable
-				index = 3;
-			} else {
-				throw new IllegalArgumentException();
-			}
-		}
-
-		else if (cmdList.get(0).equals("draw")) { // if is a draw line shape
-			if (cmdList.get(1).equals("[") && cmdList.get(3).equals("]")) {
-				index = 1;
-				Shape shape = readShape();
+				fillShape(shape, color, canvas); // fill the canvas
+			} else if (cmd.equalsIgnoreCase("draw")) {
+				if (debug) System.out.println("Draw's command");
+				Shape shape = readShape(); // try to read a shape
 				Color color = readColor();
 				drawShape(shape, color, canvas); // draw the canvas
-				index = 4; // move the pointer
-			} else if (shapes.containsKey(cmdList.get(1))) { // fill is assigned to a variable
-				String var = cmdList.get(1); // read variable
-				index = 2;
-				Color color = readColor();
-				drawShape(shapes.get(var), color, canvas);// fillShape to variable
-				index = 3;
-			} else {
-				throw new IllegalArgumentException();
+			} else if (cmd.matches("[a-zA-Z]*")) {
+				if (debug) System.out.println("New variable : " + cmd); // re-declare a new or existing variable
+				if (input.charAt(index) == '=') { // check lookahead is '=', then eavluate new shape
+					advanceIndex(1);
+					Shape newShape = evaluate();
+					if (newShape != null) { // if the shape evaluation was successfull reassign the new shape otherwise terminate
+						shapes.put(cmd, newShape);
+					} else
+						throw new IllegalArgumentException();
+				}
 			}
-
-		} else if (cmdList.get(0).matches("[a-zA-Z]*") && cmdList.get(1).equals("=")) { // re-declare a new or existing variable
-
-			index = 2;
-			Shape newShape = evaluate();
-			if (newShape != null) { // if the shape evaluation was successfull reassign the new shape otherwise terminate
-				shapes.put(cmdList.get(0), newShape);
-			} else
-				throw new IllegalArgumentException();
 		} else {
-			throw new IllegalArgumentException();
+			advanceIndex(1);
 		}
-
 	}
 
+	/**
+	 * Evaluates the operations between shapes. It uses recursion to solve multiple operators and support bracketing. Entry point of index must be the first position past the '=' sign
+	 */
 	private Shape evaluate() {
-
-		// index here must be the first position past the = sign
-		String lookahead = cmdList.get(index);
+		skipWhiteSpace();
+		String lookahead = String.valueOf(input.charAt(index));
 		Shape newShape = null;
 		if (lookahead.equals("(")) {
 			newShape = evaluateBracketed();
@@ -143,20 +93,20 @@ public class Interpreter {
 		if (newShape == null) {
 			throw new IllegalArgumentException();
 		}
-
-		if (index < cmdList.size() && cmdList.get(index).matches("^[-+&]$")) {
-			lookahead = cmdList.get(index);
+		skipWhiteSpace();
+		if (index < input.length() && String.valueOf(input.charAt(index)).matches("^[-+&]$")) { // if the value of index is either one of : [ ] + - &
+			lookahead = String.valueOf(input.charAt(index));
 			if (lookahead.equals("+")) { // attempt union operation
-				// System.out.println("Do Shape Union");
-				index++;
+				if (debug) System.out.println("Do Shape Union");
+				advanceIndex(1);
 				newShape = new ShapeUnion(newShape, evaluate()); // updates the current shape
 			} else if (lookahead.equals("&")) {
-				// System.out.println("Do Shape Intersection");
-				index++;
+				if (debug) System.out.println("Do Shape Intersection");
+				advanceIndex(1);
 				newShape = new ShapeIntersection(newShape, evaluate());
 			} else if (lookahead.equals("-")) {
-				// System.out.println("Do Shape Difference");
-				index++;
+				if (debug) System.out.println("Do Shape Difference");
+				advanceIndex(1);
 				newShape = new ShapeDifference(newShape, evaluate());
 			} else {
 				throw new IllegalArgumentException();
@@ -171,10 +121,9 @@ public class Interpreter {
 	 * @return the new shape
 	 */
 	private Shape evaluateBracketed() {
-
-		index++; // moves past the "(" char
+		advanceIndex(1); // moves past the "(" char
 		Shape shape = evaluate();
-		if (index < cmdList.size() && cmdList.get(index).equals(")")) { // make sure there is a closing braket and the index is not outOfBounds
+		if (index < input.length() && input.charAt(index) == ')') { // make sure there is a closing braket and the index is not outOfBounds
 			return shape;
 		} else {
 			return null;
@@ -189,10 +138,9 @@ public class Interpreter {
 	 * @param col
 	 *            the color of the shape
 	 * @param can
-	 *            the canvas on which to draw
+	 *            åthe canvas on which to draw
 	 */
 	private void fillShape(Shape shape, Color col, Canvas can) {
-
 		for (int i = 0; i < shape.boundingBox().getWidth() + shape.boundingBox().getX(); i++) {
 			for (int j = 0; j < shape.boundingBox().getHeight() + shape.boundingBox().getY(); j++) {
 				if (shape.contains(i, j)) {
@@ -213,7 +161,6 @@ public class Interpreter {
 	 *            the canvas on which to draw
 	 */
 	private void drawShape(Shape shape, Color col, Canvas can) {
-
 		for (int j = 0; j < shape.boundingBox().getHeight() + shape.boundingBox().getY(); j++) {
 			for (int i = 0; i < shape.boundingBox().getWidth() + shape.boundingBox().getX(); i++) {
 				if (shape.contains(i, j) && !shape.contains(i + 1, j) || !shape.contains(i - 1, j) && shape.contains(i, j) || shape.contains(i, j) && !shape.contains(i, j + 1)
@@ -225,25 +172,66 @@ public class Interpreter {
 	}
 
 	/**
+	 * Read char sequence of word
+	 * 
+	 * @return string containing the next word
+	 */
+	private String readWord() {
+		skipWhiteSpace();
+		int start = index;
+		String word = null;
+		while (index < input.length() && Character.isLetter(input.charAt(index))) {
+			word = input.substring(start, index + 1); // add 1: silly substring doesn't include the last index
+			if (debug) System.out.println("Checking for words..." + word);
+			if (keyCmd.contains(word) || shapes.keySet().contains(word)) { // check if is a key word or a variable
+				if (debug) System.out.println("Wooha dude, I found a match. Word, bro! : " + word);
+				advanceIndex(1); // increases the index to return the position past the end of the word
+				skipWhiteSpace();
+				return word;
+			} else {
+				advanceIndex(1);
+			}
+		}
+		skipWhiteSpace();
+		return word; // a new word
+	}
+
+	/**
 	 * this methods reads a token containing an array and returns a shape. In case the size or format of the array is not valid will throw an illegalArgument excpetion
 	 * 
 	 * @return return a new shape with the dimensions specified in the brackets
 	 */
 	private Shape readShape() {
-
-		if (shapes.containsKey(cmdList.get(index))) {
-			Shape newShape = shapes.get(cmdList.get(index));
-			index++; // advance index cursor
-			return newShape;
-		} else if (cmdList.get(index).equals("[") && cmdList.get(index + 1).split(",").length == 4 && cmdList.get(index + 2).equals("]")) { // is a new shape
-			String[] shapeArray = cmdList.get(index + 1).split(",");
-			int x = Integer.parseInt(shapeArray[0]);
-			int y = Integer.parseInt(shapeArray[1]);
-			int width = Integer.parseInt(shapeArray[2]);
-			int heigth = Integer.parseInt(shapeArray[3]);
-			if (x >= 0 && y >= 0 && width >= 0 && heigth >= 0) {
-				index = index + 3; // advance index cursor past the array's tokens
-				return new Rectangle(x, y, width, heigth);
+		skipWhiteSpace();
+		if (input.charAt(index) == '[') { // is a new array
+			if (debug) System.out.println("New array shape");
+			int startArray = ++index;
+			while (index < input.length() && input.charAt(index) != ']') { // advance index cursor to the find ']' then try to split the array in 4
+				advanceIndex(1);
+			}
+			String strArray = input.substring(startArray, index);
+			if (strArray.split(",").length == 4) { // check that the array has four entries comma separated
+				String[] shapeArray = strArray.split(","); // all good --> convert string into an array, and trim out all the empty spaces
+				int x = Integer.parseInt(shapeArray[0].trim());
+				int y = Integer.parseInt(shapeArray[1].trim());
+				int width = Integer.parseInt(shapeArray[2].trim());
+				int heigth = Integer.parseInt(shapeArray[3].trim());
+				if (x >= 0 && y >= 0 && width >= 0 && heigth >= 0) {
+					if (debug) System.out.println("Successfully created a new shape from array");
+					advanceIndex(1); // move the index pointer passed the ]
+					return new Rectangle(x, y, width, heigth);
+				}
+			} else {
+				throw new IllegalArgumentException();
+			}
+		} else {
+			String var = readWord(); // read word then check if is a walid word
+			if (shapes.containsKey(var)) {
+				if (debug) System.out.println("Found a valid shape stored as variable to fill..");
+				Shape newShape = shapes.get(var);
+				return newShape;
+			} else {
+				throw new IllegalArgumentException();
 			}
 		}
 		return null;
@@ -255,24 +243,40 @@ public class Interpreter {
 	 * @return the Color of the Shape
 	 */
 	private Color readColor() {
-
-		if (cmdList.get(index).charAt(0) == '#' && cmdList.get(index).length() == 7) {
-			return new Color(cmdList.get(index));
+		skipWhiteSpace();
+		if (debug) System.out.println("Reading colors ... rainbows and flying unicors");
+		String strColor;
+		if (debug) System.out.println(input.charAt(index));
+		if (input.charAt(index) == '#') { // read the next 6 digits
+			int startIndx = index;
+			advanceIndex(6);
+			strColor = input.substring(startIndx, index + 1); // reads next 6 chars
+			if (strColor.matches("^#(?:[0-9a-fA-F]{3}){1,2}$")) { // now check if is a valid hex color
+				if (debug) System.out.println("This is a valid HEX color : " + strColor);
+				advanceIndex(1);
+				return new Color(strColor);
+			}
 		} else {
 			throw new IllegalArgumentException();
 		}
+		return null; // this bother me: if the color is not valid, I throw an exception, why do I still need to return null here to close the if case ? ??
 	}
 
 	/**
-	 * Advances the index cursor though all the white spaces in the provided line
-	 *
-	 * @param line
+	 * This method allows to check if the index is out of bounds, but is not currently used as we rely on falling out of bounds to terminate the while loop in the run method
+	 * @param steps
 	 */
-	private void skipWhiteSpace(String line) {
-
-		while (index < line.length() && (line.charAt(index) == ' ')) {
+	private void advanceIndex(int steps) {
+		for (int i = 0; i < steps; i++) {
+			// if ((index) < (input.length())) {
 			index++;
+			// }
 		}
 	}
 
+	private void skipWhiteSpace() {
+		while (index < input.length() && (input.charAt(index) == ' ' || input.charAt(index) == '\n')) {
+			index = index + 1;
+		}
+	}
 }
