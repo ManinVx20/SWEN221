@@ -124,6 +124,7 @@ public class Interpreter {
 		advanceIndex(1); // moves past the "(" char
 		Shape shape = evaluate();
 		if (index < input.length() && input.charAt(index) == ')') { // make sure there is a closing braket and the index is not outOfBounds
+			advanceIndex(1);
 			return shape;
 		} else {
 			return null;
@@ -256,10 +257,8 @@ public class Interpreter {
 				advanceIndex(1);
 				return new Color(strColor);
 			}
-		} else {
-			throw new IllegalArgumentException();
 		}
-		return null; // this bother me: if the color is not valid, I throw an exception, why do I still need to return null here to close the if case ? ??
+		throw new IllegalArgumentException();
 	}
 
 	/**
