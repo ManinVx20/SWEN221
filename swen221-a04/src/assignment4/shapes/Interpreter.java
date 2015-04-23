@@ -54,15 +54,15 @@ public class Interpreter {
 		if (cmd != null) {
 			if (cmd.equalsIgnoreCase("fill")) { // if is a filled shape
 				if (debug) System.out.println("Phill's command"); // read next word then read shape and color
-				Shape shape = readShape(); // try to read a shape
+				Shape shape = evaluate(); // try to read a shape
 				Color color = readColor();
 				fillShape(shape, color, canvas); // fill the canvas
 			} else if (cmd.equalsIgnoreCase("draw")) {
 				if (debug) System.out.println("Draw's command");
-				Shape shape = readShape(); // try to read a shape
+				Shape shape = evaluate(); // try to read a shape
 				Color color = readColor();
 				drawShape(shape, color, canvas); // draw the canvas
-			} else if (cmd.matches("[a-zA-Z]*")) {
+			} else if (cmd.matches("[a-zA-Z0-9]*")) {
 				if (debug) System.out.println("New variable : " + cmd); // re-declare a new or existing variable
 				if (input.charAt(index) == '=') { // check lookahead is '=', then eavluate new shape
 					advanceIndex(1);
@@ -181,7 +181,7 @@ public class Interpreter {
 		skipWhiteSpace();
 		int start = index;
 		String word = null;
-		while (index < input.length() && Character.isLetter(input.charAt(index))) {
+		while (index < input.length() && (Character.isLetter(input.charAt(index)) || Character.isDigit(input.charAt(index)))) {
 			word = input.substring(start, index + 1); // add 1: silly substring doesn't include the last index
 			if (debug) System.out.println("Checking for words..." + word);
 			if (keyCmd.contains(word) || shapes.keySet().contains(word)) { // check if is a key word or a variable
@@ -194,6 +194,7 @@ public class Interpreter {
 			}
 		}
 		skipWhiteSpace();
+		// System.out.println(word);
 		return word; // a new word
 	}
 
@@ -263,6 +264,7 @@ public class Interpreter {
 
 	/**
 	 * This method allows to check if the index is out of bounds, but is not currently used as we rely on falling out of bounds to terminate the while loop in the run method
+	 * 
 	 * @param steps
 	 */
 	private void advanceIndex(int steps) {
