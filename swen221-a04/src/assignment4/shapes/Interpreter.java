@@ -62,7 +62,7 @@ public class Interpreter {
 				Shape shape = evaluate(); // try to read a shape
 				Color color = readColor();
 				drawShape(shape, color, canvas); // draw the canvas
-			} else if (cmd.matches("[a-zA-Z0-9]*")) {
+			} else if (cmd.matches("[a-zA-Z]+[0-9]*[a-zA-Z]*")) {
 				if (debug) System.out.println("New variable : " + cmd); // re-declare a new or existing variable
 				if (input.charAt(index) == '=') { // check lookahead is '=', then eavluate new shape
 					advanceIndex(1);
