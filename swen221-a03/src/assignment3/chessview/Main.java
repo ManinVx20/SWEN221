@@ -8,7 +8,7 @@ import assignment3.chessview.viewer.*;
 public class Main {
 	public static void main(String[] args) {
 		
-		try {
+		try {			
 			ChessGame game = new ChessGame(new FileReader(args[0]));			
 			new BoardFrame(game);
 			//textView(game);

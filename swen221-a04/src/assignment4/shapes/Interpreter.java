@@ -184,17 +184,18 @@ public class Interpreter {
 		while (index < input.length() && (Character.isLetter(input.charAt(index)) || Character.isDigit(input.charAt(index)))) {
 			word = input.substring(start, index + 1); // add 1: silly substring doesn't include the last index
 			if (debug) System.out.println("Checking for words..." + word);
-			if (keyCmd.contains(word) || shapes.keySet().contains(word)) { // check if is a key word or a variable
-				if (debug) System.out.println("Wooha dude, I found a match. Word, bro! : " + word);
-				advanceIndex(1); // increases the index to return the position past the end of the word
-				skipWhiteSpace();
-				return word;
-			} else {
+//			this checker was controlling in case a keyword is concatenated to a variable (or vice versa) 
+//			as it's not required by the parser it is commented out, but I didn't want to delete it out entirely
+//			if (keyCmd.contains(word) || shapes.keySet().contains(word)) { // check if is a key word or a variable
+//				if (debug) System.out.println("Wooha dude, I found a match. Word, bro! : " + word);
+//				advanceIndex(1); // increases the index to return the position past the end of the word
+//				skipWhiteSpace();
+//				return word;
+//			} else {
 				advanceIndex(1);
-			}
+//			}
 		}
 		skipWhiteSpace();
-		// System.out.println(word);
 		return word; // a new word
 	}
 
