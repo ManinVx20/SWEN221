@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 
 /**
  * Tests for your solution. The solution should be in a class called Solution and should initialise itself in the constructor. </p> <b>Do not modify the tests!</b> </p>
- * 
+ *
  * @author ncameron
  *
  */
@@ -22,7 +22,7 @@ public class Lab5Tests {
 
 	@Test
 	public void testAddRow() throws IOException {
-		RowFile rf = new RowFileReader(new File("/Users/diego/Documents/Victoria/SWEN221_2015T1/GitHub/swen221-labs/swen221-lab05/handout/input.dat")).read();
+		RowFile rf = new RowFileReader(new File("input.dat")).read();
 		try {
 			rf.addRow(new Identifier("Lynne", "b"), new int[] { 11, 17, 67, 5, 39, 60, 82, 49, 16 });
 			assertArrayEquals(rf.getRow(new Identifier("Lynne", "b")), new int[] { 11, 17, 67, 5, 39, 60, 82, 49, 16 });
@@ -47,7 +47,7 @@ public class Lab5Tests {
 
 	@Test
 	public void testGetRow() throws IOException {
-		RowFile rf = new RowFileReader(new File("/Users/diego/Documents/Victoria/SWEN221_2015T1/GitHub/swen221-labs/swen221-lab05/handout/input.dat")).read();
+		RowFile rf = new RowFileReader(new File("input.dat")).read();
 		try {
 			int[] ret = rf.getRow(new Identifier("Ella", "b"));
 			assertArrayEquals(ret, new int[] { 11, 17, 67, 65, 39, 60, 81, 49, 86 });
@@ -77,7 +77,7 @@ public class Lab5Tests {
 
 	@Test
 	public void testGetRowId() throws IOException {
-		RowFile rf = new RowFileReader(new File("/Users/diego/Documents/Victoria/SWEN221_2015T1/GitHub/swen221-labs/swen221-lab05/handout/input.dat")).read();
+		RowFile rf = new RowFileReader(new File("input.dat")).read();
 		try {
 			Identifier ret = rf.getRowId(0);
 			assertTrue(ret.equals(new Identifier("Ali", "a")));
@@ -107,7 +107,7 @@ public class Lab5Tests {
 
 	@Test
 	public void testGetRowTotal() throws IOException {
-		RowFile rf = new RowFileReader(new File("/Users/diego/Documents/Victoria/SWEN221_2015T1/GitHub/swen221-labs/swen221-lab05/handout/input.dat")).read();
+		RowFile rf = new RowFileReader(new File("input.dat")).read();
 		try {
 			int ret = rf.getRowTotal(new Identifier("Liam", "a"));
 			assertEquals(ret, 468);
@@ -127,7 +127,7 @@ public class Lab5Tests {
 
 	@Test
 	public void testGetRowAverage() throws IOException {
-		RowFile rf = new RowFileReader(new File("/Users/diego/Documents/Victoria/SWEN221_2015T1/GitHub/swen221-labs/swen221-lab05/handout/input.dat")).read();
+		RowFile rf = new RowFileReader(new File("input.dat")).read();
 		try {
 			int ret = rf.getRowAverage(new Identifier("Vladimir", "b"));
 			assertEquals(ret, 64);

@@ -6,25 +6,25 @@ import java.util.Scanner;
 
 public class RowFileReader {
 	private Scanner input;
-	
+
 	public RowFileReader(File file) throws FileNotFoundException {
 		input = new Scanner(file);
 	}
-	
+
 	public RowFile read() {
 		RowFile file = new RawFileImpl();
-		
+
 		// First, read title row
 		String titleLine = input.nextLine();
 //		System.out.println(titleLine);
 //		int numberOfColumns = titleLine.split(",").length;
-		
+
 		// Second, read data rows
-		while(input.hasNext()) {			
+		while(input.hasNext()) {
 			String dataLine = input.nextLine();
 //			System.out.println(dataLine);
 			String[] dataItems = dataLine.split(",");
-			
+
 			// create a new identifier
 			Identifier identifier = new Identifier(dataItems[0], dataItems[1]);
 			// creates int entries
@@ -39,7 +39,7 @@ public class RowFileReader {
 				e.printStackTrace();
 			}
 		}
-		
+
 		return file;
 	}
 }

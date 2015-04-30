@@ -12,6 +12,7 @@ import minesweeper.squares.*;
  * 
  */
 public class Game {	
+	
 	public final static int GAME_CONTINUES = 0;
 	public final static int PLAYER_LOST = 1;
 	public final static int PLAYER_WON = 2;
