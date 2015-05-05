@@ -2,6 +2,12 @@ package swen221.lab5;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.*;
 
 public class RawFileImpl implements RowFile {
@@ -81,28 +87,28 @@ public class RawFileImpl implements RowFile {
 
 	@Override
 	public String toHtmlTable() {
-		String html = "<html><body><table border=\"1\"><tr><td>Name</td> <td>dept</td> <td>dd</td><td>yu</td><td>total</td><td>average</td></tr>";
-		/*   
-   <tr>
-    <td>Dave</td>
-    <td>a</td>
-    <td>99</td>
-    <td>2</td>
-    <td>101</td>
-    <td>50.5</td>
-   </tr>
-		 */
-		for (Identifier id : ids){
-			try {
-				String entry = String.format("<tr><td>%s</td><td>%s</td><td>%d</td><td>%d</td></tr>", id.getName(),id.getDept(),getRowTotal(id),getRowAverage(id));
-				html = html.concat(entry);
-			} catch (MissingDataException e) {
-				e.printStackTrace();
+//		String html = "";
+		StringBuilder html = new StringBuilder("");
+		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("output.html"), "utf-8"))) {
+
+			html.append("<html><body><table border=\"1\"><tr><td>Name</td><td>dept</td><td>dd</td><td>yu</td><td>total</td><td>average</td></tr>");
+
+			for (Identifier id : ids){
+				try {
+					html.append("<tr>");
+					html.append("<td>"+id.getName()+"</td>"+"<td>"+id.getDept()+"</td>"+"<td>"+getRow(id).length+"</td>"+"<td>"+getRow(id).hashCode()+"</td>"+"<td>"+getRowTotal(id)+"</td>"+"<td>"+getRowAverage(id)+"</td>");
+					html.append("</tr>");
+				} catch (MissingDataException e) {
+					e.printStackTrace();
+				}
 			}
-			String end = " </table></body></html>";
-			html = html.concat(end);
-			System.out.println(html);
+			html.append("</table>");
+			System.out.println(html.toString());
+			return html.toString();
+		} catch (IOException ex) {
+			System.out.println("Error with file");
 		}
-		return html;
+		return "";
+
 	}
 }

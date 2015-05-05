@@ -24,3 +24,4 @@ public class Main {
 		new BattleFrame(battle);
 	}
 }
+
