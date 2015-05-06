@@ -100,7 +100,7 @@ public class InternalFunctions {
 				for (int i = 1; i != es.length; ++i) {
 					if (es[i] instanceof LispInteger) {
 						LispInteger e = (LispInteger) es[i];
-						result += e.value();
+						result -= e.value();
 					} else {
 						throw new Error("type error in \"-\"");
 					}

@@ -1,21 +1,37 @@
 package org.simplelisp.interpreter.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import org.junit.Test;
-import java.util.*;
-import org.simplelisp.interpreter.*;
+import org.simplelisp.interpreter.LispExpr;
+import org.simplelisp.interpreter.LispInteger;
+import org.simplelisp.interpreter.LispVector;
 
-public class LispVectorTest {
+public class LispVectorTests {
 
 	@Test
 	public void testConstructor() {
 		try {
+			new LispVector();
+		} catch (Exception e) {
+			System.out.println("Something wrong happened");
+		}
+	}
+	
+	@Test
+	public void testConstructorInvalid() {
+		try {
 			LispVector lisp = new LispVector();
-			LispExpr lisp2 = lisp.get(0);
+			lisp.get(0);
 			fail("should not work");
 		} catch (Exception e) {
-			fail("Exception occurred: " + e.getMessage());
-			e.printStackTrace();
+			// all good
 		}
 	}
 
@@ -78,7 +94,7 @@ public class LispVectorTest {
 
 	@Test
 	public void testEvaluate() {
-		assertEquals(new LispVector().evaluate(new HashMap(), new HashMap()), new LispVector());
+		assertEquals(new LispVector().evaluate(new HashMap<String, LispExpr>(), new HashMap<String, LispExpr>()), new LispVector());
 	}
 
 	@Test
