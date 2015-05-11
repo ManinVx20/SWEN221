@@ -1,6 +1,6 @@
 package cards.core;
 
-public class Card implements Comparable<Card>, Cloneable {
+public class Card implements Comparable<Card> {
 	
 	/**
 	 * Represents a card suit.
@@ -83,71 +83,10 @@ public class Card implements Comparable<Card>, Cloneable {
 	public String toString() {
 		return ranks[rank.ordinal()] + suits[suit.ordinal()];		
 	}
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((rank == null) ? 0 : rank.hashCode());
-		result = prime * result + ((suit == null) ? 0 : suit.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Card other = (Card) obj;
-		if (rank != other.rank)
-			return false;
-		if (suit != other.suit)
-			return false;
-		return true;
-	}
 
 	@Override
 	public int compareTo(Card o) {
-		if(suit() == o.suit()) {
-			return compareByRank(o);
-		} else {
-			return suit().ordinal() - o.suit().ordinal();
-		}
-	}
-	
-	/**
-	 * Compares two cards by rank
-	 * 
-	 * @param o - Card to compare to
-	 * @return
-	 */
-	public int compareByRank(Card o) {
-		return rank().ordinal() - o.rank().ordinal();
-	}
-	
-	/**
-	 * Compares two cards with trumps
-	 */
-	public int compareWithTrumps(Card o, Card.Suit trumps) {
-		if(suit() == o.suit()) {
-			return compareByRank(o);
-		} else {
-			if(suit() == trumps) {
-				return 1;
-			} else if(o.suit() == trumps) {
-				return -1;
-			}
-			return suit().ordinal() - o.suit().ordinal();
-		}
-	}
-	
-	@Override
-	public Card clone() {
-		Card clone = new Card(this.suit, this.rank);
-		
-		return clone;
+		// TODO: you need to implement this!
+		return 0;
 	}
 }

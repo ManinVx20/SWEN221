@@ -1,30 +1,30 @@
 package cards.variations;
 
 import java.util.List;
+
 import cards.core.Card;
-import cards.core.CardGame;
 import cards.core.Player;
 import cards.util.AbstractCardGame;
 
 /**
- * An implementation of the "classical" rules of Whist.
+ * A simple variation of Whist where only a single hand is played.
  * 
  * @author David J. Pearce
- *
+ * 
  */
-public class SingleHandWhist extends AbstractCardGame {
+public class ClassicWhist extends AbstractCardGame {
 
-	public SingleHandWhist() {
+	public ClassicWhist() {
 
 	}
 
 	public String getName() {
-		return "Classic Whist";
+		return "Single Hand Whist";
 	}
 	
 	public boolean isGameFinished() {
 		for (Player.Direction d : Player.Direction.values()) {
-			if (scores.get(d) == 1) {
+			if (scores.get(d) == 5) {
 				return true;
 			}
 		}
@@ -42,25 +42,5 @@ public class SingleHandWhist extends AbstractCardGame {
 			players.get(d).getHand().add(card);
 			d = d.next();
 		}		
-	}
-	
-	@Override
-	public CardGame clone() {
-		
-		SingleHandWhist clone = new SingleHandWhist();
-		
-		for(Player.Direction dir : players.keySet()) {
-			clone.players.put(dir, (Player) players.get(dir).clone());
-		}
-		
-		clone.scores.putAll(this.scores);
-		clone.tricks.putAll(this.tricks);
-		clone.trumps = this.trumps;
-		if(currentTrick != null) {
-			clone.currentTrick = currentTrick.clone();
-		}
-		
-		return clone;
-	}
-	
+	}		
 }

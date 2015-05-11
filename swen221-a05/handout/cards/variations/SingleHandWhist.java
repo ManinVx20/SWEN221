@@ -1,9 +1,13 @@
 package cards.variations;
 
 import java.util.List;
+import java.util.Set;
+
 import cards.core.Card;
-import cards.core.CardGame;
+import cards.core.IllegalMove;
 import cards.core.Player;
+import cards.core.Player.Direction;
+import cards.core.Trick;
 import cards.util.AbstractCardGame;
 
 /**
@@ -42,25 +46,5 @@ public class SingleHandWhist extends AbstractCardGame {
 			players.get(d).getHand().add(card);
 			d = d.next();
 		}		
-	}
-	
-	@Override
-	public CardGame clone() {
-		
-		SingleHandWhist clone = new SingleHandWhist();
-		
-		for(Player.Direction dir : players.keySet()) {
-			clone.players.put(dir, (Player) players.get(dir).clone());
-		}
-		
-		clone.scores.putAll(this.scores);
-		clone.tricks.putAll(this.tricks);
-		clone.trumps = this.trumps;
-		if(currentTrick != null) {
-			clone.currentTrick = currentTrick.clone();
-		}
-		
-		return clone;
-	}
-	
+	}		
 }

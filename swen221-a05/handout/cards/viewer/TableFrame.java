@@ -7,7 +7,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
 import javax.swing.*;
+
 import cards.core.*;
 import cards.util.AbstractCardGame;
 import cards.util.AbstractComputerPlayer;
@@ -19,7 +21,6 @@ import cards.variations.*;
  * 
  * @author djp
  */
-@SuppressWarnings("serial")
 public final class TableFrame extends JFrame {	
 	private final TableCanvas canvas;	
 	private final JLabel statusBar;

@@ -1,9 +1,14 @@
 package cards.variations;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import cards.core.Card;
-import cards.core.CardGame;
+import cards.core.IllegalMove;
 import cards.core.Player;
+import cards.core.Player.Direction;
+import cards.core.Trick;
 import cards.util.AbstractCardGame;
 
 public class KnockOutWhist extends AbstractCardGame {
@@ -38,20 +43,4 @@ public class KnockOutWhist extends AbstractCardGame {
 		super.endHand();
 		hand = hand - 1;
 	}
-	
-	@Override
-	public CardGame clone() {
-		
-		KnockOutWhist clone = new KnockOutWhist();
-		clone.players.putAll(this.players);
-		clone.scores.putAll(this.scores);
-		clone.tricks.putAll(this.tricks);
-		clone.trumps = this.trumps;
-		if(currentTrick != null) {
-			clone.currentTrick = currentTrick.clone();
-		}
-		
-		return clone;
-	}
-	
 }

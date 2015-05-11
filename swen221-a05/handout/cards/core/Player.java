@@ -1,7 +1,5 @@
 package cards.core;
 
-import java.util.*;
-
 /**
  * Represents a player on the board, which can be either a computer player or a
  * human. Every player has a direction (North, East, South, West) and a hand of
@@ -10,7 +8,7 @@ import java.util.*;
  * @author David J. Pearce
  * 
  */
-public class Player implements Cloneable {
+public class Player {
 	
 	/**
 	 * Represents one of the four position on the table (North, East, South and
@@ -63,23 +61,5 @@ public class Player implements Cloneable {
 	 */
 	public Hand getHand() {
 		return hand;
-	}
-
-	public Player clone() {
-		
-		Player clone = new Player(this.direction);
-		
-		Iterator<Card> hand = this.hand.iterator();
-		
-		while(hand.hasNext()) {
-			clone.hand.add(hand.next().clone());
-		}
-		
-		return clone;
-	}
-	
-	@Override
-	public String toString() {
-		return "Player [direction=" + direction + ", hand=" + hand + "]";
 	}
 }

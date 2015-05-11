@@ -5,6 +5,7 @@ import java.awt.image.*;
 import java.awt.geom.*;
 import java.awt.event.*;
 import java.util.*;
+
 import cards.core.*;
 
 /**
@@ -13,7 +14,6 @@ import cards.core.*;
  * @author djp
  * 
  */
-@SuppressWarnings("serial")
 public class TableCanvas extends Canvas implements MouseListener {
 	private final TableFrame parent;
 	private Font font;	

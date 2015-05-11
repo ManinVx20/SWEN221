@@ -16,7 +16,10 @@ import cards.util.AbstractCardGame;
 public class ClassicWhist extends AbstractCardGame {
 
 	public ClassicWhist() {
-
+		/* CLEVER TRICK: This creates an empty constructor, which will overwrite the abstractGame class constructor, so all the player/scores and tricks 
+		values are uninitialized and although are declared as final, can be accessed (set) once in the clone method below ! 
+		@_@! Took me a while to figure this out.
+		*/ 
 	}
 
 	public String getName() {

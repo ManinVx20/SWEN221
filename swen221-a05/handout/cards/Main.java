@@ -1,5 +1,6 @@
 package cards;
 
+import cards.variations.ClassicWhist;
 import cards.viewer.TableFrame;
 
 public class Main {

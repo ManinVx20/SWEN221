@@ -2,6 +2,7 @@ package cards.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents a trick being played. This includes the cards that have been played so far, as well as what the suit of trumps is for this trick.
@@ -83,6 +84,19 @@ public class Trick implements Cloneable {
 	}
 
 	/**
+	 * Get lead suit for this trick
+	 * 
+	 * @return Card.Suit
+	 */
+	public Card.Suit getLeadSuit() {
+		Card played = getCardPlayed(lead);
+		if (played != null) {
+			return played.suit();
+		}
+		return null;
+	}
+
+	/**
 	 * Determine the next player to play in this trick.
 	 * 
 	 * @return
@@ -126,20 +140,28 @@ public class Trick implements Cloneable {
 	 * exception.
 	 */
 	public void play(Player p, Card c) throws IllegalMove {
-		if ( !p.getHand().contains(c) ){ // check if player's card is valid
-			throw new IllegalMove("Card not valid");
+		List<Card> cardsUsed = getCardsPlayed();
+		// check is player has valid card
+		if (!p.hand.contains(c)) {
+			throw new IllegalMove(p.direction + " Illegal move: card not valid " + c);
 		}
-		if (p.getDirection().ordinal() != (lead.ordinal()+this.getCardsPlayed().size() ) ) { // check if attempt to play card out of turn
-			throw new IllegalMove("Player attempting to play out of turn");
-		}
-		if (cards[0] != null) { // check if other players are playing leading cards (if any)
-			if (p.getHand().matches(cards[0].suit()).size() > 0) { // player has at least one card of leading suit -> must use it
-				if (c.suit().ordinal() != cards[0].suit().ordinal()){
-					throw new IllegalMove("Player has a card matching the leading suit, must use it!");
+		if (!cardsUsed.isEmpty()) {
+			if (p.direction != getNextToPlay()) {
+				throw new IllegalMove(p.direction + " Illegal move: wrong player ");
+			}
+			// check if player is using the correct card (matching the leading suit)
+			if (c.suit() != getCardPlayed(lead).suit()) {
+				Set<Card> leadCards = p.getHand().matches(getCardPlayed(lead).suit());
+				if ((!leadCards.isEmpty())) {
+					throw new IllegalMove(p.direction + " Illegal move. Player should use " + getCardPlayed(lead).suit());
 				}
-			} 
+			}
+		} else {
+			if (p.direction != lead) {
+				throw new IllegalMove(p.direction + " Player is not current player. ");
+			}
 		}
-		// Finally play the card
+		// Finally, play the card.
 		for (int i = 0; i != 4; ++i) {
 			if (cards[i] == null) {
 				cards[i] = c;
@@ -148,14 +170,30 @@ public class Trick implements Cloneable {
 			}
 		}
 	}
-	
+
+	/**
+	 * Add card to cards. Used by deep cloning.
+	 * 
+	 * @param card
+	 */
+	public void addCard(Card card) {
+		int count = 0;
+		for (int i = 0; i < cards.length; i++) {
+			if (cards[i] != null) {
+				count++;
+			}
+		}
+		this.cards[count] = card;
+	}
+
 	@Override
 	public Trick clone() {
-		try {
-			return (Trick) super.clone();
-		} catch(CloneNotSupportedException e) {
-			return null;
+		Trick clone = new Trick(this.lead, this.trumps);
+		for (int i = 0; i < cards.length; i++) {
+			if (cards[i] != null) {
+				clone.addCard(cards[i]);
+			}
 		}
+		return clone;
 	}
-	
 }

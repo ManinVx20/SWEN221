@@ -8,13 +8,7 @@ package cards.core;
  * @author David J. Pearce
  * 
  */
-
 public class IllegalMove extends Exception {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 2386369563408035945L;
-
 	public IllegalMove(String e) {
 		super(e);
 	}

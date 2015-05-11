@@ -27,7 +27,7 @@ public class Hand implements Cloneable, Iterable<Card> {
 	public boolean contains(Card card) {
 		return cards.contains(card);
 	}
-
+	
 	/**
 	 * Return all cards in this hand which match the given suit.
 	 * @param suit
@@ -72,10 +72,5 @@ public class Hand implements Cloneable, Iterable<Card> {
 	 */
 	public void clear() {
 		cards.clear();
-	}
-
-	@Override
-	public String toString() {
-		return "Hand [cards=" + cards + "]";
-	}
+	}	
 }
