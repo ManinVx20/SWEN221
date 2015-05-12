@@ -5,7 +5,6 @@ import java.util.Set;
 import cards.core.Card;
 import cards.core.Player;
 import cards.core.Trick;
-import cards.core.Hand;
 
 /**
  * Implements a simple computer player who plays the highest card available when the trick can still be won, otherwise discards the lowest card available. In the special case that the player must win
@@ -22,20 +21,19 @@ public class SimpleComputerPlayer extends AbstractComputerPlayer {
 
 	@Override
 	public Card getNextCard(Trick trick) {
-		Hand hand = player.getHand();
 		Card.Suit trumps = trick.getTrumps();
-		Card.Suit suit = trick.getLeadSuit();
 		Card nextMax = null;
 		Card nextMin = null;
 		Card winCard = null;
 		Set<Card> leadingCards = null;
-		Set<Card> trumpCards = hand.matches(trumps);
-		if (suit != null) leadingCards = hand.matches(suit);
-		Iterator<Card> cardsItr = hand.iterator();
+		if (trick.getLeadSuit() != null) {
+			leadingCards = player.getHand().matches(trick.getLeadSuit());
+		}
+		Iterator<Card> cardsItr = player.getHand().iterator();
 
-		if (!trick.getCardsPlayed().isEmpty()) {
+		if (trick.getCardsPlayed() != null) {
 			for (Card card : trick.getCardsPlayed()) {
-				if (card.suit() == trumps || card.suit() == suit) {
+				if (card.suit() == trumps || card.suit() == trick.getLeadSuit()) {
 					if (winCard == null) {
 						winCard = card;
 						// compare with trumps to check if would win
@@ -54,14 +52,14 @@ public class SimpleComputerPlayer extends AbstractComputerPlayer {
 				nextMax = getHighest(leadingCards, trumps);
 			}
 			nextMin = getLowest(leadingCards, trumps);
-		} else if (trumpCards.size() > 0) {
+		} else if (player.getHand().matches(trumps).size() > 0) {
 			// have no leading cards, play highest trump
 			if (trick.getCardsPlayed().size() == 3) {
-				nextMax = getHighestWinning(trumpCards, winCard, trumps);
+				nextMax = getHighestWinning(player.getHand().matches(trumps), winCard, trumps);
 			} else {
-				nextMax = getHighest(trumpCards, trumps);
+				nextMax = getHighest(player.getHand().matches(trumps), trumps);
 			}
-			nextMin = getLowest(trumpCards, trumps);
+			nextMin = getLowest(player.getHand().matches(trumps), trumps);
 		} else {
 			// otherwise just use highest and lowest cards
 			while (cardsItr.hasNext()) {
@@ -83,7 +81,7 @@ public class SimpleComputerPlayer extends AbstractComputerPlayer {
 			}
 		}
 		if (winCard == null || nextMax.compareWithTrumps(winCard, trumps) > 0) {
-			if (nextMax.suit() == trumps || nextMax.suit() == suit || suit == null) {
+			if (nextMax.suit() == trumps || nextMax.suit() == trick.getLeadSuit() || trick.getLeadSuit() == null) {
 				return nextMax;
 			}
 		}
