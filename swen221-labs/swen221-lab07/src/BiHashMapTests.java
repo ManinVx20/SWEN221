@@ -19,8 +19,6 @@ public class BiHashMapTests {
 		map.put("Hello", "World");
 		map.remove("Hello");
 		assertTrue(map.get("Hello") == null);
-		System.out.println("asasasas");
-		System.out.println(map.getKeys("World"));
 		assertTrue(map.getKeys("World").size() == 0); // how can be size 0 and null at the same time ? ? 
 		assertFalse(map.containsKey("Hello"));
 		assertFalse(map.containsValue("World"));
@@ -30,9 +28,7 @@ public class BiHashMapTests {
 		BiHashMap<String> map = new BiHashMap<String>();
 		map.put("Hello", "World");
 		map.clear();		
-		System.out.println(map.get("Hello"));
 		assertTrue(map.get("Hello") == null);
-		System.out.println(map.getKeys("World"));
 //		assertTrue(map.getKeys("World") == null); // how can be size 0 and null at the same time ? ? 
 		assertFalse(map.containsKey("Hello"));
 		assertFalse(map.containsValue("World"));
