@@ -2,20 +2,18 @@ package cards.viewer;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Map;
+
 import javax.swing.*;
 import javax.swing.border.Border;
+
 import cards.core.CardGame;
 import cards.core.Player;
+import cards.util.AbstractComputerPlayer;
 import cards.variations.*;
 
 public class ConfigurationDialog extends JDialog {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	final String[] gameKindNames = {"Classic Whist","Knock-Out Whist","Single-Hand Whist"};
-	@SuppressWarnings("rawtypes")
 	final Class[] gameKinds = {ClassicWhist.class,KnockOutWhist.class,SingleHandWhist.class};
 	
 	public ConfigurationDialog(TableFrame parent) {
@@ -62,15 +60,9 @@ public class ConfigurationDialog extends JDialog {
 		ButtonGroup group = new ButtonGroup();
 		
 		for (int i=0;i!=gameKinds.length;++i) {
-			@SuppressWarnings("rawtypes")
 			final Class kind = gameKinds[i];
 			buttons[i] = new JRadioButton("",kind.isInstance(table.getGame()));
 			buttons[i].setAction(new AbstractAction(gameKindNames[i]) {
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
-
 				public void actionPerformed(ActionEvent e) {
 					try {
 						table.setGame((CardGame) kind.newInstance());
@@ -107,11 +99,6 @@ public class ConfigurationDialog extends JDialog {
 			checkBoxes[p.ordinal()] = new JCheckBox("", table.isComputerPlayer(p));
 			checkBoxes[p.ordinal()].setAction(new AbstractAction(p
 					+ " is a Computer Player.") {
-				/**
-						 * 
-						 */
-						private static final long serialVersionUID = 1L;
-
 				public void actionPerformed(ActionEvent e) {
 					table.setComputerPlayer(p, !table.isComputerPlayer(p));					
 				}
@@ -139,11 +126,6 @@ public class ConfigurationDialog extends JDialog {
 		JPanel startPanel = new JPanel();
 		JButton button = new JButton();
 		button.setAction(new AbstractAction("Let's Play") {
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
 			}
@@ -151,5 +133,4 @@ public class ConfigurationDialog extends JDialog {
 		startPanel.add(button);
 		return startPanel;
 	}
-
 }
