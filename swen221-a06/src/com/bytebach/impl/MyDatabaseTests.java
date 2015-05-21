@@ -59,73 +59,73 @@ public class MyDatabaseTests {
 		}
 	}
 
-//	@Test
-//	public void testValidRemoveRow1() {
-//		Object[][] rawData = { { 0, "Hello WOrld" }, { 1, "Blah" } };
-//		Value[][] rows = toValues(rawData);
-//
-//		Database db = createDatabase();
-//		createTable(db, "table", FIELDS_1);
-//		addRow(db, "table", rows[0]);
-//		addRow(db, "table", rows[1]);
-//		removeRow2(db, "table", new IntegerValue(0));
-//
-//		Value[][] nrows = toValues(new Object[][] { { 1, "Blah" } });
-//
-//		checkTable(db, "table", nrows);
-//	}
-//
-//	@Test
-//	public void testValidRemoveRow2() {
-//		Object[][] rawData = { { 0, "Hello WOrld" }, { 1, "Blah" } };
-//		Value[][] rows = toValues(rawData);
-//
-//		Database db = createDatabase();
-//		createTable(db, "table", FIELDS_1);
-//		addRow(db, "table", rows[0]);
-//		addRow(db, "table", rows[1]);
-//		db.table("table").rows().remove(0);
-//
-//		Value[][] nrows = toValues(new Object[][] { { 1, "Blah" } });
-//
-//		checkTable(db, "table", nrows);
-//	}
+	@Test
+	public void testValidRemoveRow1() {
+		Object[][] rawData = { { 0, "Hello WOrld" }, { 1, "Blah" } };
+		Value[][] rows = toValues(rawData);
 
-//	@Test
-//	public void testValidSetRow() {
-//		Object[][] rawData = { { 0, "Hello WOrld" }, { 1, "Blah" } };
-//		Value[][] rows = toValues(rawData);
-//
-//		Database db = createDatabase();
-//		createTable(db, "table", FIELDS_1);
-//		addRow(db, "table", rows[0]);
-//		addRow(db, "table", rows[1]);
-//		modifyRow2(db, "table", 1, "Blah", 0);
-//
-//		rows[0][1] = new StringValue("Blah"); // mirror update
-//
-//		checkTable(db, "table", rows);
-//	}
-//
-//	@Test
-//	public void testInvalidSetRow1() {
-//		Object[][] rawData = { { 0, "Hello WOrld" }, { 1, "Blah" } };
-//		Value[][] rows = toValues(rawData);
-//
-//		Database db = createDatabase();
-//		createTable(db, "table", FIELDS_1);
-//		addRow(db, "table", rows[0]);
-//		addRow(db, "table", rows[1]);
-//
-//		try {
-//			// Here, we're trying to set a key value ... should be impossible!
-//			db.table("table").row(new IntegerValue(0)).set(0, new IntegerValue(1));
-//			fail("Shouldn't be able to change value of key field");
-//		} catch (InvalidOperation e) {
-//
-//		}
-//	}
-//
+		Database db = createDatabase();
+		createTable(db, "table", FIELDS_1);
+		addRow(db, "table", rows[0]);
+		addRow(db, "table", rows[1]);
+		removeRow2(db, "table", new IntegerValue(0));
+
+		Value[][] nrows = toValues(new Object[][] { { 1, "Blah" } });
+
+		checkTable(db, "table", nrows);
+	}
+
+	@Test
+	public void testValidRemoveRow2() {
+		Object[][] rawData = { { 0, "Hello WOrld" }, { 1, "Blah" } };
+		Value[][] rows = toValues(rawData);
+
+		Database db = createDatabase();
+		createTable(db, "table", FIELDS_1);
+		addRow(db, "table", rows[0]);
+		addRow(db, "table", rows[1]);
+		db.table("table").rows().remove(0);
+
+		Value[][] nrows = toValues(new Object[][] { { 1, "Blah" } });
+
+		checkTable(db, "table", nrows);
+	}
+
+	@Test
+	public void testValidSetRow() {
+		Object[][] rawData = { { 0, "Hello WOrld" }, { 1, "Blah" } };
+		Value[][] rows = toValues(rawData);
+
+		Database db = createDatabase();
+		createTable(db, "table", FIELDS_1);
+		addRow(db, "table", rows[0]);
+		addRow(db, "table", rows[1]);
+		modifyRow2(db, "table", 1, "Blah", 0);
+
+		rows[0][1] = new StringValue("Blah"); // mirror update
+
+		checkTable(db, "table", rows);
+	}
+
+	@Test
+	public void testInvalidSetRow1() {
+		Object[][] rawData = { { 0, "Hello WOrld" }, { 1, "Blah" } };
+		Value[][] rows = toValues(rawData);
+
+		Database db = createDatabase();
+		createTable(db, "table", FIELDS_1);
+		addRow(db, "table", rows[0]);
+		addRow(db, "table", rows[1]);
+
+		try {
+			// Here, we're trying to set a key value ... should be impossible!
+			db.table("table").row(new IntegerValue(0)).set(0, new IntegerValue(1));
+			fail("Shouldn't be able to change value of key field");
+		} catch (InvalidOperation e) {
+
+		}
+	}
+
 //	@Test
 //	public void testInvalidSetRow2() {
 //		Object[][] rawData = { { 0, "Hello WOrld" }, { 1, "Blah" } };
@@ -489,6 +489,12 @@ public class MyDatabaseTests {
 //		checkTable(db, "table", nTableRows);
 //		checkTable(db, "refs", nRefRows);
 //	}
+	
+	// TEST IS KEY FIELD IS DECLARED TWICE
+	
+	// CHECK IF THER EIS AT LEAST ONE KEY FIELD
+	
+	// CAN TWO FIELDS HAVE THE SAME NAME ? 
 
 	// =====================================================================================================
 	// Helper Methods!
