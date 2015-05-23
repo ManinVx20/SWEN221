@@ -119,6 +119,7 @@ public class MyDatabaseTests {
 
 		try {
 			// Here, we're trying to set a key value ... should be impossible!
+			// returns a table pointing to a row (0) then sets an element on specified list<value>
 			db.table("table").row(new IntegerValue(0)).set(0, new IntegerValue(1));
 			fail("Shouldn't be able to change value of key field");
 		} catch (InvalidOperation e) {

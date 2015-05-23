@@ -1,9 +1,11 @@
 package com.bytebach.impl;
 
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import com.bytebach.model.Field;
 import com.bytebach.model.InvalidOperation;
@@ -28,71 +30,7 @@ public class MyTable implements Table {
 		}
 		
 		// EXTENDS ATTAYLIST to check for duplicate keys
-		this.rows = new ArrayList<List<Value>>(){
-			// override ArrayList.add list of values
-			public boolean add(List<Value> row) {
-				for (int i = 0; i < row.size(); i++) { // for each entry in the row
-					Field currentField = fields.get(i);
-					if (currentField.isKey()) { // check if relative there is one key field or more...
-						if (keyFieldValues.containsKey(currentField) && keyFieldValues.get(currentField).contains(row.get(i))) { // if keyFieldValues already conatins this key field
-							throw new InvalidOperation("");
-						} else if (!keyFieldValues.containsKey(currentField)) {
-							List<Value> keyVals = new ArrayList<Value>();
-							keyVals.add(row.get(i)); // add the value to key values list
-							keyFieldValues.put(currentField, keyVals); // put back the updated key values list onto the key field map
-							return super.add(row);
-						}
-					}
-					return super.add(row);
-				}
-				return false;
-				
-//				// Check if arrayList has same key-field.value as another:
-//				// For each value in row, check if field[position] is a key. If is a key, check if value of key is duplicate or unique. 
-//				// As long as there is one unique value form the key-vlaues allow adding
-//				
-//				boolean allowAdding = false;
-//				
-//				System.out.println("ADDDING : " + row);
-//				for (int i = 0; i < row.size(); i++) { // for each entry in the row
-//					System.out.println(row.get(i));
-//					
-//					Field currentField = fields.get(i);
-//					if (currentField.isKey()) { // check if relative there is one key field or more... 
-//						System.out.println("KEY FIELD : " + currentField.title());
-//						System.out.println("----");
-//						System.out.println(keyFieldValues.containsKey(currentField));
-//						
-//						if (keyFieldValues.containsKey(currentField)) { // if keyFieldValues already conatins this key field
-//							System.out.println("----");
-//							
-//							if (!keyFieldValues.get(i).contains(row.get(i))){ // if values contains this field but not this value, ok to add  
-//
-//								List<Value> keyValueList = keyFieldValues.get(fields.get(i));
-//								keyValueList.add(row.get(i)); // add the value to key values list
-//								// then add this value to map list 
-//								keyFieldValues.put(currentField, keyValueList); // put back the updated key values list onto the key field map
-//								// Finally set allow adding true
-//								allowAdding = true;
-//							} else { // keyFieldValues contain this key field with same value
-//								allowAdding = false;
-//							}
-//						} else { // keyFieldValues doesn't contain key-field, need to add key-field and value
-//							List<Value> values = new ArrayList<Value>();
-//							values.add(row.get(i));
-//							keyFieldValues.put(currentField, values);
-//							allowAdding = true;
-//						} 
-//						
-//						System.out.println("%%%%%%");
-//						if (!allowAdding){
-//							throw new InvalidOperation("");
-//						}
-//					}
-//				}
-//				return super.add(row);
-			}
-		};
+		this.rows = new RowList<List<Value>>();
 	}
 
 	@Override
@@ -134,4 +72,90 @@ public class MyTable implements Table {
 	}
 
 	// private void deleteByIndex()
+	
+	public class RowValue<Value> extends ArrayList<Value>{
+		
+		@Override
+		public boolean add(Value e) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+	}
+	
+	public class RowList<E extends List<Value>> extends ArrayList<List<Value>>{
+
+		@Override
+		public boolean add(List<Value> e) {
+			System.out.println("AAAAAAAAAAAAAAAAAAA");
+				for (int i = 0; i < e.size(); i++) { // for each entry in the row
+					Field currentField = fields.get(i);
+					if (currentField.isKey()) { // check if relative there is one key field or more...
+						if (keyFieldValues.containsKey(currentField) && keyFieldValues.get(currentField).contains(e.get(i))) { // if keyFieldValues already conatins this key field
+							throw new InvalidOperation("");
+						} else if (!keyFieldValues.containsKey(currentField)) {
+							List<Value> keyVals = new ArrayList<Value>();
+							keyVals.add(e.get(i)); // add the value to key values list
+							keyFieldValues.put(currentField, keyVals); // put back the updated key values list onto the key field map
+							return super.add(e);
+						}
+					}
+					return super.add(e);
+				}
+				return false;
+			}
+		}
+
+		public List<Value> set(int index, List<Value> element) {
+			// TODO Auto-generated method stub
+			System.out.println("-----------------");
+			return null;
+		}
 }
+	
+	
+	
+	
+//	// Check if arrayList has same key-field.value as another:
+//	// For each value in row, check if field[position] is a key. If is a key, check if value of key is duplicate or unique. 
+//	// As long as there is one unique value form the key-vlaues allow adding
+//	
+//	boolean allowAdding = false;
+//	
+//	System.out.println("ADDDING : " + row);
+//	for (int i = 0; i < row.size(); i++) { // for each entry in the row
+//		System.out.println(row.get(i));
+//		
+//		Field currentField = fields.get(i);
+//		if (currentField.isKey()) { // check if relative there is one key field or more... 
+//			System.out.println("KEY FIELD : " + currentField.title());
+//			System.out.println("----");
+//			System.out.println(keyFieldValues.containsKey(currentField));
+//			
+//			if (keyFieldValues.containsKey(currentField)) { // if keyFieldValues already conatins this key field
+//				System.out.println("----");
+//				
+//				if (!keyFieldValues.get(i).contains(row.get(i))){ // if values contains this field but not this value, ok to add  
+//
+//					List<Value> keyValueList = keyFieldValues.get(fields.get(i));
+//					keyValueList.add(row.get(i)); // add the value to key values list
+//					// then add this value to map list 
+//					keyFieldValues.put(currentField, keyValueList); // put back the updated key values list onto the key field map
+//					// Finally set allow adding true
+//					allowAdding = true;
+//				} else { // keyFieldValues contain this key field with same value
+//					allowAdding = false;
+//				}
+//			} else { // keyFieldValues doesn't contain key-field, need to add key-field and value
+//				List<Value> values = new ArrayList<Value>();
+//				values.add(row.get(i));
+//				keyFieldValues.put(currentField, values);
+//				allowAdding = true;
+//			} 
+//			
+//			System.out.println("%%%%%%");
+//			if (!allowAdding){
+//				throw new InvalidOperation("");
+//			}
+//		}
+//	}
+//	return super.add(row);
