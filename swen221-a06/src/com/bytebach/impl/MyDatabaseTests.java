@@ -123,7 +123,6 @@ public class MyDatabaseTests {
 			db.table("table").row(new IntegerValue(0)).set(0, new IntegerValue(1));
 			fail("Shouldn't be able to change value of key field");
 		} catch (InvalidOperation e) {
-
 		}
 	}
 

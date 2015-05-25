@@ -15,13 +15,11 @@ public class MyDatabase implements Database {
 
 	@Override
 	public Collection<? extends Table> tables() {
-
 		return tables;
 	}
 
 	@Override
 	public Table table(String name) {
-
 		for (Table t : tables) {
 			if (t.name().equals(name)) return t;
 		}
@@ -34,7 +32,7 @@ public class MyDatabase implements Database {
 		if (table(name) != null) {
 			throw new InvalidOperation("Unable to create table with duplicate name");
 		} else {
-			tables.add(new MyTable(name, fields));
+			tables.add(new MyTable(this, name, fields));
 		}
 	}
 
