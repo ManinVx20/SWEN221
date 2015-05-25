@@ -1,11 +1,8 @@
 package com.bytebach.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import com.bytebach.model.Field;
 import com.bytebach.model.InvalidOperation;
@@ -20,7 +17,6 @@ public class MyTable implements Table {
 	private List<List<Value>> rows;
 	private Map<Field, List<Value>> keyFieldValues = new HashMap<Field, List<Value>>();
 
-	@SuppressWarnings("serial")
 	public MyTable(String name, List<Field> fields) {
 		this.name = name;
 		this.fields = fields;
@@ -53,14 +49,18 @@ public class MyTable implements Table {
 
 	@Override
 	public List<Value> row(Value... keys) {
-		// CHECK IF THE PROVIDED TYPE IS THE RIGHT ONE
 		if (keys.length != this.keys.size()) throw new InvalidOperation(keys.length + " keys provided but there are" + this.keys.size() + " key fields.");
 		for (List<Value> r : rows) {
 			boolean foundIt = true;
 			for (int i = 0; i < keys.length; i++) {
 				if (!(keys[i]).equals(r.get(i))) foundIt = false;
 			}
-			if (foundIt) return r;
+			if (foundIt) {
+				// copies the found List<Value> into a new ValueList<Value> then returns it ... @_@! Castin ghere wouldn't work. WHY? 
+				ValueList<Value> tmpRow = new ValueList<Value>();
+				tmpRow.addAll(r);
+				return tmpRow;
+			};
 		}
 		return null;
 	}
@@ -70,30 +70,23 @@ public class MyTable implements Table {
 		List<Value> toDelete = row(keys);
 		rows.remove(toDelete);
 	}
+	
+	private class RowList<E extends List<Value>> extends ArrayList<List<Value>>{
 
-	// private void deleteByIndex()
-	
-	public class RowValue<Value> extends ArrayList<Value>{
-		
-		@Override
-		public boolean add(Value e) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-	}
-	
-	public class RowList<E extends List<Value>> extends ArrayList<List<Value>>{
+		private static final long serialVersionUID = 4292514328680205758L;
 
 		@Override
 		public boolean add(List<Value> e) {
-			System.out.println("AAAAAAAAAAAAAAAAAAA");
+			System.out.println("Adding new RowList");
 				for (int i = 0; i < e.size(); i++) { // for each entry in the row
 					Field currentField = fields.get(i);
 					if (currentField.isKey()) { // check if relative there is one key field or more...
 						if (keyFieldValues.containsKey(currentField) && keyFieldValues.get(currentField).contains(e.get(i))) { // if keyFieldValues already conatins this key field
 							throw new InvalidOperation("");
 						} else if (!keyFieldValues.containsKey(currentField)) {
-							List<Value> keyVals = new ArrayList<Value>();
+							/// make new type of list<Value>
+							ValueList<Value> keyVals = new ValueList<Value>();
+//							List<Value> keyVals = new ArrayList<Value>();
 							keyVals.add(e.get(i)); // add the value to key values list
 							keyFieldValues.put(currentField, keyVals); // put back the updated key values list onto the key field map
 							return super.add(e);
@@ -105,12 +98,47 @@ public class MyTable implements Table {
 			}
 		}
 
-		public List<Value> set(int index, List<Value> element) {
-			// TODO Auto-generated method stub
-			System.out.println("-----------------");
-			return null;
-		}
+	private class ValueList<Value> extends ArrayList<Value>{
+		
+		private static final long serialVersionUID = -3382912876372169860L;
+
+		@Override
+		public Value set(int index, Value element) {
+			// we have a list of Values, we need to check is the lavlue at index is key ... 
+			System.out.println("ValueList: set()");
+			if (fields.get(index).isKey()){
+				System.out.println("Is a key field");
+				throw new InvalidOperation("Key fields cannot be set. Invalid operation");
+			} else {
+				System.out.println("Is not a key field, valid call to set()");
+				Value tmpVal = super.set(index, element);
+				System.out.println(element);
+				System.out.println(tmpVal);
+				return tmpVal;
+//				I tried to duplicate the super method, but is declared as transient. What is a transient declaration ?? 
+//				Value oldValue = super.elementData(index);
+//		        elementData[index] = element;
+//		        return oldValue;
+			}
+		}	
+	}
 }
+//	
+//	private class ValueList extends AbstractList<Value>{
+//
+//		@Override
+//		public Value get(int index) {
+//			// TODO Auto-generated method stub
+//			return null;
+//		}
+//
+//		@Override
+//		public int size() {
+//			// TODO Auto-generated method stub
+//			return 0;
+//		}
+//}
+//}
 	
 	
 	
