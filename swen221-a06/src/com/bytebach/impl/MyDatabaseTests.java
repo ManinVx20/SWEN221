@@ -11,6 +11,7 @@ public class MyDatabaseTests {
 	// The following provides some simple lists of fields to test with
 	private static final Field[] FIELDS_1 = { new Field("ID", Field.Type.INTEGER, true), new Field("TEXT", Field.Type.TEXT, false) };
 	private static final Field[] FIELDS_2 = { new Field("ID", Field.Type.INTEGER, true), new Field("REF", "table", false) };
+	private static final Field[] FIELDS_3 = { new Field("ID1", Field.Type.INTEGER, true), new Field("ID2", Field.Type.INTEGER, true), new Field("TEXT", Field.Type.TEXT, false) };
 
 	@Test
 	public void testValidCreateTable() {
@@ -42,6 +43,20 @@ public class MyDatabaseTests {
 
 		checkTable(db, "table", rows);
 	}
+	
+	@Test
+	public void testValidAddRowMultipleKeys() {
+		Object[][] rawData = { { 0, 0, "Hello WOrld" }, {0, 1, "Blah" } };
+		Value[][] rows = toValues(rawData);
+
+		Database db = createDatabase();
+		createTable(db, "table", FIELDS_3);
+
+		addRow(db, "table", rows[0]);
+		addRow(db, "table", rows[1]);
+
+		checkTable(db, "table", rows);
+	}
 
 	@Test
 	public void testInvalidAddRow() {
@@ -50,6 +65,22 @@ public class MyDatabaseTests {
 
 		Database db = createDatabase();
 		createTable(db, "table", FIELDS_1);
+		addRow(db, "table", rows[0]);
+		try {
+			addRow(db, "table", rows[1]);
+			fail("Shouldn't be able to add row with same key field as another");
+		} catch (InvalidOperation e) {
+
+		}
+	}
+	
+	@Test
+	public void testInvalidAddRowMultipleKeys() {
+		Object[][] rawData = { { 0, 0, "Hello WOrld" }, { 0, 0, "Blah" } };
+		Value[][] rows = toValues(rawData);
+
+		Database db = createDatabase();
+		createTable(db, "table", FIELDS_3);
 		addRow(db, "table", rows[0]);
 		try {
 			addRow(db, "table", rows[1]);
@@ -126,118 +157,119 @@ public class MyDatabaseTests {
 		}
 	}
 
-//	@Test
-//	public void testInvalidSetRow2() {
-//		Object[][] rawData = { { 0, "Hello WOrld" }, { 1, "Blah" } };
-//		Value[][] rows = toValues(rawData);
-//
-//		Database db = createDatabase();
-//		createTable(db, "table", FIELDS_1);
-//		addRow(db, "table", rows[0]);
-//		addRow(db, "table", rows[1]);
-//
-//		try {
-//			// Here, we're trying to set a key value ... should be impossible!
-//			db.table("table").row(new IntegerValue(0)).set(1, new IntegerValue(1));
-//			fail("Shouldn't be able to field to value of incorrect type");
-//		} catch (InvalidOperation e) {
-//
-//		}
-//	}
-//
-//	@Test
-//	public void testInvalidSetRow3() {
-//		Object[][] rawData = { { 0, "Hello WOrld" }, { 1, "Blah" } };
-//		Value[][] rows = toValues(rawData);
-//
-//		Database db = createDatabase();
-//		createTable(db, "table", FIELDS_1);
-//		addRow(db, "table", rows[0]);
-//		addRow(db, "table", rows[1]);
-//
-//		try {
-//			// Here, we're trying to set a key value ... should be impossible!
-//			db.table("table").row(new IntegerValue(0)).set(1, new StringValue("A TEXT field cannot have new lines\nLike this.  Only TEXTAREAs can."));
-//			fail("Shouldn't be able to field to value of incorrect type");
-//		} catch (InvalidOperation e) {
-//
-//		}
-//	}
-//
-//	@Test
-//	public void testInvalidRowModification1() {
-//		Object[][] rawData = { { 0, "Hello WOrld" }, { 1, "Blah" } };
-//		Value[][] rows = toValues(rawData);
-//
-//		Database db = createDatabase();
-//		createTable(db, "table", FIELDS_1);
-//		addRow(db, "table", rows[0]);
-//		addRow(db, "table", rows[1]);
-//
-//		try {
-//			db.table("table").row(new IntegerValue(0)).add(new StringValue("Hello"));
-//			fail("Shouldn't be able to add field to row");
-//		} catch (InvalidOperation e) {
-//
-//		}
-//	}
-//
-//	@Test
-//	public void testInvalidRowModification2() {
-//		Object[][] rawData = { { 0, "Hello WOrld" }, { 1, "Blah" } };
-//		Value[][] rows = toValues(rawData);
-//
-//		Database db = createDatabase();
-//		createTable(db, "table", FIELDS_1);
-//		addRow(db, "table", rows[0]);
-//		addRow(db, "table", rows[1]);
-//
-//		try {
-//			db.table("table").row(new IntegerValue(0)).remove(0);
-//			fail("Shouldn't be able to remove field from row");
-//		} catch (InvalidOperation e) {
-//
-//		}
-//	}
-//
-//	@Test
-//	public void testValidReferenceAdd() {
-//		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
-//		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 0) } };
-//		Value[][] tableRows = toValues(rawTableRows);
-//		Value[][] refRows = toValues(rawRefRows);
-//
-//		Database db = createDatabase();
-//		createTable(db, "table", FIELDS_1);
-//		createTable(db, "refs", FIELDS_2);
-//		addRow(db, "table", tableRows[0]);
-//		addRow(db, "table", tableRows[1]);
-//		addRow(db, "refs", refRows[0]);
-//
-//		checkTable(db, "table", tableRows);
-//		checkTable(db, "refs", refRows);
-//	}
-//
-//	@Test
-//	public void testInvalidReferenceAdd1() {
-//		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
-//		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 2) } };
-//		Value[][] tableRows = toValues(rawTableRows);
-//		Value[][] refRows = toValues(rawRefRows);
-//
-//		Database db = createDatabase();
-//		createTable(db, "table", FIELDS_1);
-//		createTable(db, "refs", FIELDS_2);
-//		addRow(db, "table", tableRows[0]);
-//		addRow(db, "table", tableRows[1]);
-//		try {
-//			addRow(db, "refs", refRows[0]);
-//			fail("Shouldn't be able to add row containing invalid reference");
-//		} catch (InvalidOperation e) {
-//
-//		}
-//	}
-//
+	@Test
+	public void testInvalidSetRow2() {
+		Object[][] rawData = { { 0, "Hello WOrld" }, { 1, "Blah" } };
+		Value[][] rows = toValues(rawData);
+
+		Database db = createDatabase();
+		createTable(db, "table", FIELDS_1);
+		addRow(db, "table", rows[0]);
+		addRow(db, "table", rows[1]);
+
+		try {
+			// Here, we're trying to set a key value ... should be impossible!
+			db.table("table").row(new IntegerValue(0)).set(1, new IntegerValue(1));
+			fail("Shouldn't be able to field to value of incorrect type");
+		} catch (InvalidOperation e) {
+
+		}
+	}
+
+	@Test
+	public void testInvalidSetRow3() {
+		Object[][] rawData = { { 0, "Hello WOrld" }, { 1, "Blah" } };
+		Value[][] rows = toValues(rawData);
+
+		Database db = createDatabase();
+		createTable(db, "table", FIELDS_1);
+		addRow(db, "table", rows[0]);
+		addRow(db, "table", rows[1]);
+
+		try {
+			// Here, we're trying to set a key value ... should be impossible!
+			db.table("table").row(new IntegerValue(0)).set(1, new StringValue("A TEXT field cannot have new lines\nLike this.  Only TEXTAREAs can."));
+			fail("Shouldn't be able to field to value of incorrect type");
+		} catch (InvalidOperation e) {
+
+		}
+	}
+
+	@Test
+	public void testInvalidRowModification1() {
+		Object[][] rawData = { { 0, "Hello WOrld" }, { 1, "Blah" } };
+		Value[][] rows = toValues(rawData);
+
+		Database db = createDatabase();
+		createTable(db, "table", FIELDS_1);
+		addRow(db, "table", rows[0]);
+		addRow(db, "table", rows[1]);
+
+		try {
+			db.table("table").row(new IntegerValue(0)).add(new StringValue("Hello"));
+			fail("Shouldn't be able to add field to row");
+		} catch (InvalidOperation e) {
+
+		}
+	}
+
+	@Test
+	public void testInvalidRowModification2() {
+		Object[][] rawData = { { 0, "Hello WOrld" }, { 1, "Blah" } };
+		Value[][] rows = toValues(rawData);
+
+		Database db = createDatabase();
+		createTable(db, "table", FIELDS_1);
+		addRow(db, "table", rows[0]);
+		addRow(db, "table", rows[1]);
+
+		try {
+			db.table("table").row(new IntegerValue(0)).remove(0);
+			fail("Shouldn't be able to remove field from row");
+		} catch (InvalidOperation e) {
+
+		}
+	}
+
+	@Test
+	public void testValidReferenceAdd() {
+		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
+		// ReferenceValue("table", 0) -> where 0 is the key value represented by the ID
+		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 0) } };
+		Value[][] tableRows = toValues(rawTableRows);
+		Value[][] refRows = toValues(rawRefRows);
+
+		Database db = createDatabase();
+		createTable(db, "table", FIELDS_1);
+		createTable(db, "refs", FIELDS_2);
+		addRow(db, "table", tableRows[0]);
+		addRow(db, "table", tableRows[1]);
+		addRow(db, "refs", refRows[0]);
+
+		checkTable(db, "table", tableRows);
+		checkTable(db, "refs", refRows);
+	}
+
+	@Test
+	public void testInvalidReferenceAdd1() {
+		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
+		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 2) } };
+		Value[][] tableRows = toValues(rawTableRows);
+		Value[][] refRows = toValues(rawRefRows);
+
+		Database db = createDatabase();
+		createTable(db, "table", FIELDS_1);
+		createTable(db, "refs", FIELDS_2);
+		addRow(db, "table", tableRows[0]);
+		addRow(db, "table", tableRows[1]);
+		try {
+			addRow(db, "refs", refRows[0]);
+			fail("Shouldn't be able to add row containing invalid reference");
+		} catch (InvalidOperation e) {
+
+		}
+	}
+
 //	@Test
 //	public void testInvalidReferenceAdd2() {
 //		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
@@ -257,7 +289,7 @@ public class MyDatabaseTests {
 //
 //		}
 //	}
-//
+
 //	@Test
 //	public void testValidReferenceSet() {
 //		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };

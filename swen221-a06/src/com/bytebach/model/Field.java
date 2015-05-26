@@ -15,7 +15,6 @@ public final class Field {
 	private boolean isKey;
 
 	public Field(String title, Type type, boolean isKey) {
-		// WHAT IS THIS ?
 		if (type == Type.REFERENCE) {
 			throw new IllegalArgumentException("Cannot create reference type with this constructor");
 		}

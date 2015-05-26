@@ -24,21 +24,16 @@ public class ListRows implements List<List<Value>> {
 		this.internalRows = new ArrayList<ValueList>();
 	}
 
-//	public Map<Field, List<Value>> getKeyMap(){
-//		return keyValues;
-//	}
-	
 	@Override
 	public boolean add(List<Value> valueList) {
+		System.out.println("----------ADDING LIST OF VLAUES");
+		// CHECK IF OK TO ADD. IF NOT RETURNS NULL
 		ValueList valueListToAdd = isOkToAdd(valueList);
-		System.out.println("-------------");
-		System.out.println(valueListToAdd);
 		if (valueListToAdd != null) {
-			// Convert the list of values into a new valuelist.... ask why we cannot cast. Is it because List<Value> is not subtype of ValueList?
 			internalRows.add(valueListToAdd);
 			return true;
 		}
-		throw new InvalidOperation("Cannot add row with same key field as another");
+		throw new InvalidOperation("Invalid operation");
 	}
 	
 	/**
@@ -47,21 +42,16 @@ public class ListRows implements List<List<Value>> {
 	 * @return
 	 */
 	private ValueList toValueList(List<Value> values){
-		isOkToAdd(values);
 		ValueList tmpValList = new ValueList(this);
 		tmpValList.addAll(values);
 		return tmpValList;
-		
 	}
 
 	@Override
 	public List<Value> set(int index, List<Value> valueList) {
-		System.out.println("SET ON LISTROW");
 		List<Value> tmp = internalRows.get(index);
 		ValueList valueListToAdd = isOkToAdd(valueList);
 		if (valueListToAdd != null) {
-			// Convert the list of value into a vlaueList
-			// can add checks here for valuList set checking
 			internalRows.set(index, valueListToAdd);
 			return tmp;
 		}
@@ -75,13 +65,16 @@ public class ListRows implements List<List<Value>> {
 	 * @return
 	 */
 	private ValueList isOkToAdd(List<Value> valueList) {
+		boolean okToAdd = false;
+		// CHECK FOR SAME SIZE OF LISTS
 		if (parent.fields().size() == valueList.size()) {
-			// cycle though each field and check type and if is key. If is key, check if clashing values
+			// ITERATE THOUGH VALUES, CHECK IF FIELD IS KEY, THEN CHECK IF IS CLASHING
 			for (int i = 0; i < valueList.size(); i++) {
 				Field currentField = this.parent.fields().get(i);
 				if (currentField.isKey()) {
-					// if list of keyValues is empty or if doesn't contain this value -> add to keyValues
-					if (keyValues.get(currentField) == null || !keyValues.get(currentField).contains(valueList.get(i))) {
+					// IF KEYVALUES IS EMPTY
+					if (keyValues.isEmpty()){
+						okToAdd = true; 
 						List<Value> tmpValList;
 						if (keyValues.get(currentField) == null) {
 							tmpValList = new ArrayList<Value>();
@@ -92,13 +85,34 @@ public class ListRows implements List<List<Value>> {
 						tmpValList.add(valueList.get(i));
 						keyValues.put(currentField, tmpValList);
 						// finally return keyvalues converted into a ValueList
-						return toValueList(valueList);
-					} else if (keyValues.get(currentField).contains(valueList.get(i))) { // if keyValues already contains this value
-						return null;
+//						return toValueList(valueList);
+					// if keyValues is not empty but doesn't have this field yet, or keyValues doesn't contain this value -> ok to add
+					} else if (keyValues.get(currentField) == null || !keyValues.get(currentField).contains(valueList.get(i))) {
+//						if (keyValues.get(currentField) == null || !keyValues.get(currentField).contains(valueList.get(i))) {
+						okToAdd = true; 
+						List<Value> tmpValList;
+						if (keyValues.get(currentField) == null) {
+							tmpValList = new ArrayList<Value>();
+						} else {
+							tmpValList = keyValues.get(currentField);
+						}
+						// add value to the tmpList and then to the valueListMap
+						tmpValList.add(valueList.get(i));
+						keyValues.put(currentField, tmpValList);
+						// finally return keyvalues converted into a ValueList
+//						if (okToAdd) return toValueList(valueList);
+					// IF KEYVALUE CONTAINS THE KEY VALUE
+					} else if (keyValues.get(currentField).contains(valueList.get(i))) {
+						// CHECK IF THERE ARE OTHER KEY VALUES: does keyValues have more than one key ?
+						// not ok to add /// but continue
+//						return null;
+						okToAdd = false;
 					}
 				} else { // currentField is not key -> add is ok provided is same type
 					// finally return keyvalues converted into a ValueList
-					return toValueList(valueList);
+					if (okToAdd) {
+						return toValueList(valueList);
+					}
 				}
 			}
 		}
@@ -107,7 +121,6 @@ public class ListRows implements List<List<Value>> {
 
 	@Override
 	public int size() {
-		System.out.println("SIZE");
 		return internalRows.size();
 	}
 
@@ -165,7 +178,6 @@ public class ListRows implements List<List<Value>> {
 
 	@Override
 	public boolean remove(Object o) {
-		System.out.println("REMOVE LISTROW WITH OBJ");
 		// First check if o is instance of ValueList
 		if (o instanceof ValueList) {
 			// then check if o content matches any of the rows

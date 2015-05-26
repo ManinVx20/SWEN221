@@ -36,13 +36,9 @@ public class ValueList implements List<Value> {
 
 	@Override
 	public Value set(int index, Value element) {
-		System.out.println("######");
-		// check if value is same type 
-
 		// CHECK IF NEW VALUE IS CLASHING WITH KEY-VALUES
 		// is the field of the element a key ? 
 		Field fieldName = parent.parent.fields().get(index);
-		System.out.println("FIELDNAME " + fieldName.title());
 		// get keyMap
 		Map<Field, List<Value>> keyMap = parent.keyValues;
 		// check if field is contined in the map
@@ -56,14 +52,29 @@ public class ValueList implements List<Value> {
 		}
 		// finally, if permitted, set the new element in the row, and return old element
 		Value tmpVal = values.get(index);
-		System.out.println(tmpVal.getClass());
-		this.values.set(index, element);
-		return tmpVal;
+		// CHECK IF SAME TYPE
+		if (tmpVal.getClass() == element.getClass()){
+			// further check if this String field is of type TEXT or TEXTAREA
+			if (tmpVal.getClass().getSimpleName().equals("StringValue")){
+				// now check if tmpVal doesn't has any \n => don't allow new types with \n
+				if (element.toString().contains("\n") && !tmpVal.toString().contains("\n")){
+					throw new InvalidOperation("Field to value of incorrect type");
+				}
+			}
+			this.values.set(index, element);
+			return tmpVal;
+		} else {
+			throw new InvalidOperation("Key elements of different type");
+		} 
+	}
+
+	@Override
+	public void add(int index, Value element) {
+		throw new InvalidOperation(null);
 	}
 
 	@Override
 	public Value remove(int index) {
-		System.out.println("welfsjfskjsdlfskjl");
 		throw new InvalidOperation(null);
 	}
 
@@ -79,7 +90,6 @@ public class ValueList implements List<Value> {
 
 	@Override
 	public boolean contains(Object o) {
-		System.out.println("ValueList contains Object ... ");
 		// check o is instance of ValueList
 		if (o instanceof ValueList) {
 		// check they are same size
@@ -125,7 +135,6 @@ public class ValueList implements List<Value> {
 
 	@Override
 	public boolean addAll(Collection<? extends Value> c) {
-		System.out.println("ADD ALL");
 		for (Value val : c){
 			values.add(val);
 		}
@@ -157,11 +166,6 @@ public class ValueList implements List<Value> {
 	public Value get(int index) {
 		return values.get(index);
 //		throw new InvalidOperation(null);
-	}
-
-	@Override
-	public void add(int index, Value element) {
-		throw new InvalidOperation(null);
 	}
 
 	@Override
