@@ -101,7 +101,7 @@ public class MyDatabaseTests {
 		addRow(db, "table", rows[0]);
 		addRow(db, "table", rows[1]);
 		modifyRow2(db, "table", 1, "Blah", 0);
-
+///////////////////////
 		rows[0][1] = new StringValue("Blah"); // mirror update
 
 		checkTable(db, "table", rows);
@@ -638,7 +638,9 @@ public class MyDatabaseTests {
 		System.out.println("> MODIFYING ROW IN \"" + table + "\" WITH KEYS " + Arrays.toString(keys) + " : " + entry + " => " + value);
 		Value[] vals = toValues(keys);
 		Value val = toValue(value);
-		db.table(table).row(vals).set(entry, val);
+/////////////////////////	
+		List<Value >tmpRow = db.table(table).row(vals);
+		tmpRow.set(entry, val);
 	}
 
 	/**

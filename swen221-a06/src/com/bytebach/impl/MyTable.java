@@ -13,9 +13,9 @@ public class MyTable implements Table {
 	
 	private Database parent;
 	private String name;
-	private List<Field> fields;
-	private List<List<Value>> rows;
+	protected List<Field> fields;
 	private List<Field> keys;
+	private ListRows rows;
 	
 	public MyTable(Database db, String name, List<Field> fields) {
 		this.parent = db;
@@ -56,9 +56,10 @@ public class MyTable implements Table {
 //				ValueList<Value> tmpRow = new ValueList<Value>();
 //				tmpRow.addAll(r);
 //				return tmpRow;
-				ValueList newRow = new ValueList(rows);
-				newRow.addAll(r);
-				return newRow;
+//				ValueList newRow = new ValueList(rows);
+//				newRow.addAll(r);
+//				return newRow;
+				return r;
 			};
 		}
 		return null;
