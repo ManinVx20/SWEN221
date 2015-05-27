@@ -38,46 +38,6 @@ public class MyRow implements List<Value> {
 	private boolean isOkToAdd(int index, Value element) {
 
 		System.out.println("ISOKTOADD");
-		/*
-		List<Field> keyFields = parent.parent.fields();
-		List<Integer> keys = new ArrayList<Integer>();
-		// COLLECTS ALL THE KEY FIELDS
-		for (Field field : keyFields) {
-			if (field.isKey()) {
-				keys.add(keyFields.indexOf(field));
-			}
-		}
-		//
-		
-		int count = 0;
-		for (Value val : values) {
-			if (keys.contains(count)) {
-				List<Value> row = parent.parent.row(val);
-				if (row != null && row.size() > 0) {
-					throw new InvalidOperation("Trying to add already existing key " + val);
-				}
-			}
-
-			if (val instanceof ReferenceValue) {
-				ReferenceValue referenceVal = (ReferenceValue) val;
-				Table referenceTable = parent.parent.parent.table(referenceVal.table());
-				if (referenceTable != null) {
-					List<Value> match = referenceTable.row(referenceVal.keys());
-
-					if (match.size() == 0) {
-						throw new InvalidOperation("Key " + referenceVal + " does not exist");
-					}
-				} else {
-					throw new InvalidOperation("Table " + referenceVal.table() + " does not exist");
-				}
-			}
-			count++;
-		}
-
-		return true;
-	}
-	*/
-	
 		// CHECK IF NEW VALUE IS CLASHING WITH KEY-VALUES
 		// is the field of the element a key ?
 		Field fieldName = parent.parent.fields().get(index);
@@ -123,45 +83,6 @@ public class MyRow implements List<Value> {
 		}
 	}
 	
-	
-	/// TEMP SAVED CODE
-	/*
-	// CHECK IF NEW VALUE IS CLASHING WITH KEY-VALUES
-	// is the field of the element a key ?
-	Field fieldName = parent.parent.fields().get(index);
-	// get keyMap
-	Map<Field, List<Value>> keyMap = parent.keyValues;
-	// check if field is contined in the map
-	if (keyMap.containsKey(fieldName)) {
-		// grab all the key vlaues of this field
-		List<Value> tmpValues = keyMap.get(fieldName);
-		// now check if element is contained in this list
-		if (tmpValues.contains(element)) {
-			throw new InvalidOperation("Key element clashing");
-		}
-	}
-	// finally, if permitted, set the new element in the row, and return old element
-	Value tmpVal = values.get(index);
-	// CHECK IF SAME TYPE
-	if (tmpVal.getClass() == element.getClass()) {
-		// further check if this String field is of type TEXT or TEXTAREA
-		if (tmpVal.getClass().getSimpleName().equals("StringValue")) {
-			// now check if tmpVal doesn't has any \n => don't allow new types with \n
-			if (element.toString().contains("\n") && !tmpVal.toString().contains("\n")) {
-				throw new InvalidOperation("Field to value of incorrect type");
-			}
-		}
-		this.values.set(index, element);
-		return tmpVal;
-	} else {
-		throw new InvalidOperation("Key elements of different type");
-	}
-}
-*/	
-	
-	
-	
-
 	@Override
 	public Value get(int index) {
 		return values.get(index);

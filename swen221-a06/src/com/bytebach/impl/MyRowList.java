@@ -113,30 +113,22 @@ public class MyRowList implements List<List<Value>> {
 						okToAdd = false;
 					}
 				} else if (currentField.type().equals(Type.REFERENCE)) {
-					System.out.println("FOUND REFERENCE");
 					// find the reference value and reference table
 					ReferenceValue referenceVal = (ReferenceValue) valueList.get(i);
-					Table referenceTable = parent.parent.table(referenceVal.table());
-					// check if the reference table is not null, then check the row index from the reference value
-					if(referenceTable != null) {
-						List<Value> match = referenceTable.row(referenceVal.keys());
-						if(match == null) {
-							throw new InvalidOperation("Key " + referenceVal + " does not exist");
+					if (referenceVal != null) { // make sure there is a refVal -> otherwise the website will crash! 
+						if (parent.parent.table(referenceVal.table()) != null ){
+							Table referenceTable = parent.parent.table(referenceVal.table());
+							List<Value> match = referenceTable.row(referenceVal.keys());
+							if(match == null) {
+								throw new InvalidOperation("Key " + referenceVal + " does not exist");
+							}
+						} else {
+							throw new InvalidOperation("Table " + referenceVal.table() + " does not exist");
 						}
-					} else {
-						throw new InvalidOperation("Table " + referenceVal.table() + " does not exist");
+						return toValueList(valueList);
 					}
-					
-//					// CREATES A LIST ARRAY WITH KEY REFERENCE VALUES
-//					List<Value> keyRefValues = new ArrayList<Value>();
-//					for (int x=0; x<((ReferenceValue) valueList.get(x)).keys().length; x++){
-//						keyRefValues.add(((ReferenceValue) valueList.get(x)).keys()[x]);
-//					}
-//					System.out.println(Arrays.toString(((ReferenceValue) valueList.get(i)).keys()));
-//					System.out.println(currentField.refTable());
-					return toValueList(valueList);
 				} else { // currentField is not key -> add is ok provided is same type
-							// finally return keyvalues converted into a ValueList
+					// finally return keyvalues converted into a ValueList
 					if (okToAdd) {
 						return toValueList(valueList);
 					}
@@ -206,7 +198,6 @@ public class MyRowList implements List<List<Value>> {
 			// then check if rowToDelete matches any of the rows
 			for (int index = 0; index < internalRows.size(); index++) {
 				if (internalRows.get(index).contains(rowToDelete)) {
-//					System.out.println("FOUND ROW TO DELETE");
 					
 					// Map used to keep track of what to delete. Delete is performed at the end of the traversal
 					Map<Table,List<List<Value>>> toDeleteMap = new HashMap<Table,List<List<Value>>>();
@@ -214,10 +205,9 @@ public class MyRowList implements List<List<Value>> {
 					List<List<Value>> rowsToDelete = new ArrayList<List<Value>>();
 					List<Value> keysToDelete = new ArrayList<Value>();
 					
-					// CHECK FOR REFERENCE VLAUES
-					// if in rowToDelete, there is a value which contains a reference, navigate to the other table and delete the content
+					// CHECK FOR REFERENCE VALUES
+					// if we remove a reference form TABLE which contains a value which is referenced somewhere else -> all the references should be deleted
 					
-					// If a table contains a reference to any of the value in the row to remove, also remove the row in that table
 					// let's say we remove a row which contains a List<key> 0,1 and in another table/row/value there is a reference to this table/this List<key> 0,1
 					// FOR EACH TABLE, FOR EACH ROW, FOR EACH VALUE
 					for (Table table : parent.parent.tables()){
@@ -240,7 +230,12 @@ public class MyRowList implements List<List<Value>> {
 												// if row contains a key value .. and matches with the reference value 
 												if (matchingTable.fields().get(kIndx).isKey()) {
 													// if key of this field matches the ReferenceValue.keys[kIndx] --> is ok to delete
+//													System.out.println("---------");
+//													System.out.println(refRow.get(kIndx));
+//													System.out.println("---------");
+
 													if (refRow.get(kIndx).equals(refVal.keys()[kIndx]) && refRow.get(kIndx).equals(rowToDelete.get(kIndx))) {
+//														if (refRow.get(kIndx).equals(refVal.keys()[kIndx]) && refRow.get(kIndx).equals(rowToDelete.get(kIndx))) {
 														// if value matches .. continue until end of array
 														okToDelete = true;
 														keysToDelete.add(refRow.get(kIndx));
@@ -260,22 +255,26 @@ public class MyRowList implements List<List<Value>> {
 							}
 						}
 						// now that we have a list of list<value>
-						System.out.println("-------------");
-						System.out.println(rowsToDelete);
-						System.out.println(table.name());
+//						System.out.println("-------------");
+//						System.out.println(rowsToDelete);
+//						System.out.println(table.name());
 						if (!rowsToDelete.isEmpty()){
 							toDeleteMap.put(table, rowsToDelete);
 						}
 					}
-					// if the map contains some elements, which contains some element -> delete
+					// if the map contains "some elements", which this table contains same "some element" -> delete
 					if (!toDeleteMap.isEmpty()){
 						for (Table table : toDeleteMap.keySet()){
-							if (!toDeleteMap.get(table).isEmpty()){
-								for (List<Value> keyValList : toDeleteMap.get(table)){
-									System.out.println("WAS OK TO DELETE");
+							MyTable myTable = (MyTable) table;
+							if (!toDeleteMap.get(myTable).isEmpty()){
+								// for each keyValueList in deleteMap ... delete the table row associated with that keyValueList
+								for (List<Value> keyValList : toDeleteMap.get(myTable)){
+									System.out.println("ELEMENTS TO DELETE");
+									System.out.println(toDeleteMap.get(myTable).size());
+									System.out.println(keyValList.toString());
 									Value[] keyToDeleteArray = new Value[keyValList.size()];
 									keyToDeleteArray = keyValList.toArray(keyToDeleteArray);
-									table.delete(keyToDeleteArray);
+									myTable.deleteRef(keyToDeleteArray);
 								}
 							}
 						}
@@ -286,49 +285,6 @@ public class MyRowList implements List<List<Value>> {
 			}
 		}
 		return false;
-		
-		
-		/*
-		if(o instanceof MyRow) {
-			List<Value> values = (List<Value>) o;
-			
-			List<Field> fields = parent.fields();
-			List<Integer> keys = new ArrayList<Integer>();
-			
-			for(Field field : fields) {
-				if(field.isKey()) {
-					keys.add(fields.indexOf(field));
-				}
-			}
-			
-			//System.out.println(values);
-			Value[] findKeys = new Value[keys.size()];
-			
-			int count = 0;
-			for(Value val : values) {
-				if(keys.contains(count)) {
-					Field keyField = fields.get(count);
-				}
-				
-				if(val instanceof ReferenceValue) {
-					ReferenceValue referenceVal = (ReferenceValue) val;
-					Table table = parent.parent.table(referenceVal.table());
-					table.delete(referenceVal.keys());
-				}
-				count++;
-			}
-			
-			return super.remove(o);
-		} else {
-			throw new InvalidOperation("Object " + o + " is not of the type List<Value>");
-		}
-	}
-	*/
-		
-		
-		
-		
-		
 	}
 
 	@Override
