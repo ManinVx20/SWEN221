@@ -270,257 +270,257 @@ public class MyDatabaseTests {
 		}
 	}
 
-//	@Test
-//	public void testInvalidReferenceAdd2() {
-//		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
-//		Object[][] rawRefRows = { { 0, new ReferenceValue("BROKEN", 0) } };
-//		Value[][] tableRows = toValues(rawTableRows);
-//		Value[][] refRows = toValues(rawRefRows);
-//
-//		Database db = createDatabase();
-//		createTable(db, "table", FIELDS_1);
-//		createTable(db, "refs", FIELDS_2);
-//		addRow(db, "table", tableRows[0]);
-//		addRow(db, "table", tableRows[1]);
-//		try {
-//			addRow(db, "refs", refRows[0]);
-//			fail("Shouldn't be able to add row containing invalid reference");
-//		} catch (InvalidOperation e) {
-//
-//		}
-//	}
+	@Test
+	public void testInvalidReferenceAdd2() {
+		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
+		Object[][] rawRefRows = { { 0, new ReferenceValue("BROKEN", 0) } };
+		Value[][] tableRows = toValues(rawTableRows);
+		Value[][] refRows = toValues(rawRefRows);
 
-//	@Test
-//	public void testValidReferenceSet() {
-//		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
-//		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 0) } };
-//		Value[][] tableRows = toValues(rawTableRows);
-//		Value[][] refRows = toValues(rawRefRows);
-//
-//		Database db = createDatabase();
-//		createTable(db, "table", FIELDS_1);
-//		createTable(db, "refs", FIELDS_2);
-//		addRow(db, "table", tableRows[0]);
-//		addRow(db, "table", tableRows[1]);
-//		addRow(db, "refs", refRows[0]);
-//		modifyRow2(db, "refs", 1, new ReferenceValue("table", 1), 0);
-//
-//		// mirror update
-//		refRows[0][1] = new ReferenceValue("table", 1);
-//
-//		checkTable(db, "table", tableRows);
-//		checkTable(db, "refs", refRows);
-//	}
-//
-//	@Test
-//	public void testInvalidReferenceSet1() {
-//		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
-//		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 0) } };
-//		Value[][] tableRows = toValues(rawTableRows);
-//		Value[][] refRows = toValues(rawRefRows);
-//
-//		Database db = createDatabase();
-//		createTable(db, "table", FIELDS_1);
-//		createTable(db, "refs", FIELDS_2);
-//		addRow(db, "table", tableRows[0]);
-//		addRow(db, "table", tableRows[1]);
-//		addRow(db, "refs", refRows[0]);
-//		try {
-//			db.table("refs").row(new IntegerValue(0)).set(1, new ReferenceValue("table", 2));
-//			fail("Shouldn't be able to set row entry to invalid reference");
-//		} catch (InvalidOperation e) {
-//
-//		}
-//	}
-//
-//	@Test
-//	public void testInvalidReferenceSet2() {
-//		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
-//		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 0) } };
-//		Value[][] tableRows = toValues(rawTableRows);
-//		Value[][] refRows = toValues(rawRefRows);
-//
-//		Database db = createDatabase();
-//		createTable(db, "table", FIELDS_1);
-//		createTable(db, "refs", FIELDS_2);
-//		addRow(db, "table", tableRows[0]);
-//		addRow(db, "table", tableRows[1]);
-//		addRow(db, "refs", refRows[0]);
-//		try {
-//			db.table("refs").row(new IntegerValue(0)).set(1, new ReferenceValue("BROKEN", 2));
-//			fail("Shouldn't be able to set row entry to invalid reference");
-//		} catch (InvalidOperation e) {
-//
-//		}
-//	}
-//
-//	@Test
-//	public void testInvalidReferenceSet3() {
-//		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
-//		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 0) } };
-//		Value[][] tableRows = toValues(rawTableRows);
-//		Value[][] refRows = toValues(rawRefRows);
-//
-//		Database db = createDatabase();
-//		createTable(db, "table", FIELDS_1);
-//		createTable(db, "refs", FIELDS_2);
-//		addRow(db, "table", tableRows[0]);
-//		addRow(db, "table", tableRows[1]);
-//		addRow(db, "refs", refRows[0]);
-//		try {
-//			db.table("refs").row(new IntegerValue(0)).set(1, new ReferenceValue("table", 1, 1));
-//			fail("Shouldn't be able to set row entry to invalid reference");
-//		} catch (InvalidOperation e) {
-//
-//		}
-//	}
-//
-//	@Test
-//	public void testInvalidReferenceSet4() {
-//		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
-//		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 0) } };
-//		Value[][] tableRows = toValues(rawTableRows);
-//		Value[][] refRows = toValues(rawRefRows);
-//
-//		Database db = createDatabase();
-//		createTable(db, "table", FIELDS_1);
-//		createTable(db, "refs", FIELDS_2);
-//		addRow(db, "table", tableRows[0]);
-//		addRow(db, "table", tableRows[1]);
-//		addRow(db, "refs", refRows[0]);
-//		try {
-//			db.table("refs").row(new IntegerValue(0)).set(1, new ReferenceValue("table"));
-//			fail("Shouldn't be able to set row entry to invalid reference");
-//		} catch (InvalidOperation e) {
-//
-//		}
-//	}
-//
-//	@Test
-//	public void testInvalidReferenceSet5() {
-//		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
-//		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 0) } };
-//		Value[][] tableRows = toValues(rawTableRows);
-//		Value[][] refRows = toValues(rawRefRows);
-//
-//		Database db = createDatabase();
-//		createTable(db, "table", FIELDS_1);
-//		createTable(db, "refs", FIELDS_2);
-//		addRow(db, "table", tableRows[0]);
-//		addRow(db, "table", tableRows[1]);
-//		addRow(db, "refs", refRows[0]);
-//		try {
-//			db.table("refs").row(new IntegerValue(0)).set(1, new ReferenceValue("table", "invalidKey"));
-//			fail("Shouldn't be able to set row entry to invalid reference");
-//		} catch (InvalidOperation e) {
-//
-//		}
-//	}
-//
-//	@Test
-//	public void testCascadingDelete1() {
-//		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
-//		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 0) } };
-//		Value[][] tableRows = toValues(rawTableRows);
-//		Value[][] refRows = toValues(rawRefRows);
-//
-//		Database db = createDatabase();
-//		createTable(db, "table", FIELDS_1);
-//		createTable(db, "refs", FIELDS_2);
-//		addRow(db, "table", tableRows[0]);
-//		addRow(db, "table", tableRows[1]);
-//		addRow(db, "refs", refRows[0]);
-//		removeRow2(db, "table", new IntegerValue(0));
-//
-//		// mirror update
-//		Object[][] nRawTableRows = { { 1, "Blah" } };
-//		Value[][] nTableRows = toValues(nRawTableRows);
-//		Object[][] nRawRefRows = {};
-//		Value[][] nRefRows = toValues(nRawRefRows);
-//
-//		checkTable(db, "table", nTableRows);
-//		checkTable(db, "refs", nRefRows);
-//	}
-//
-//	@Test
-//	public void testCascadingDelete2() {
-//		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
-//		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 0) }, { 1, new ReferenceValue("table", 1) } };
-//		Value[][] tableRows = toValues(rawTableRows);
-//		Value[][] refRows = toValues(rawRefRows);
-//
-//		Database db = createDatabase();
-//		createTable(db, "table", FIELDS_1);
-//		createTable(db, "refs", FIELDS_2);
-//		addRow(db, "table", tableRows[0]);
-//		addRow(db, "table", tableRows[1]);
-//		addRow(db, "refs", refRows[0]);
-//		addRow(db, "refs", refRows[1]);
-//		removeRow2(db, "table", new IntegerValue(0));
-//
-//		// mirror update
-//		Object[][] nRawTableRows = { { 1, "Blah" } };
-//		Value[][] nTableRows = toValues(nRawTableRows);
-//		Object[][] nRawRefRows = { { 1, new ReferenceValue("table", 1) } };
-//		Value[][] nRefRows = toValues(nRawRefRows);
-//
-//		checkTable(db, "table", nTableRows);
-//		checkTable(db, "refs", nRefRows);
-//	}
-//
-//	@Test
-//	public void testCascadingDelete3() {
-//		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
-//		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 0) }, { 1, new ReferenceValue("table", 1) }, { 2, new ReferenceValue("table", 0) } };
-//		Value[][] tableRows = toValues(rawTableRows);
-//		Value[][] refRows = toValues(rawRefRows);
-//
-//		Database db = createDatabase();
-//		createTable(db, "table", FIELDS_1);
-//		createTable(db, "refs", FIELDS_2);
-//		addRow(db, "table", tableRows[0]);
-//		addRow(db, "table", tableRows[1]);
-//		addRow(db, "refs", refRows[0]);
-//		addRow(db, "refs", refRows[1]);
-//		addRow(db, "refs", refRows[2]);
-//		removeRow2(db, "table", new IntegerValue(0));
-//
-//		// mirror update
-//		Object[][] nRawTableRows = { { 1, "Blah" } };
-//		Value[][] nTableRows = toValues(nRawTableRows);
-//		Object[][] nRawRefRows = { { 1, new ReferenceValue("table", 1) } };
-//		Value[][] nRefRows = toValues(nRawRefRows);
-//
-//		checkTable(db, "table", nTableRows);
-//		checkTable(db, "refs", nRefRows);
-//	}
-//
-//	@Test
-//	public void testCascadingDelete4() {
-//		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
-//		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 0) }, { 1, new ReferenceValue("table", 1) }, { 2, new ReferenceValue("table", 0) } };
-//		Value[][] tableRows = toValues(rawTableRows);
-//		Value[][] refRows = toValues(rawRefRows);
-//
-//		Database db = createDatabase();
-//		createTable(db, "table", FIELDS_1);
-//		createTable(db, "refs", FIELDS_2);
-//		addRow(db, "table", tableRows[0]);
-//		addRow(db, "table", tableRows[1]);
-//		addRow(db, "refs", refRows[0]);
-//		addRow(db, "refs", refRows[1]);
-//		addRow(db, "refs", refRows[2]);
-//		removeRow2(db, "table", new IntegerValue(1));
-//
-//		// mirror update
-//		Object[][] nRawTableRows = { { 0, "Hello WOrld" } };
-//		Value[][] nTableRows = toValues(nRawTableRows);
-//		Object[][] nRawRefRows = { { 0, new ReferenceValue("table", 0) }, { 2, new ReferenceValue("table", 0) } };
-//		Value[][] nRefRows = toValues(nRawRefRows);
-//
-//		checkTable(db, "table", nTableRows);
-//		checkTable(db, "refs", nRefRows);
-//	}
+		Database db = createDatabase();
+		createTable(db, "table", FIELDS_1);
+		createTable(db, "refs", FIELDS_2);
+		addRow(db, "table", tableRows[0]);
+		addRow(db, "table", tableRows[1]);
+		try {
+			addRow(db, "refs", refRows[0]);
+			fail("Shouldn't be able to add row containing invalid reference");
+		} catch (InvalidOperation e) {
+
+		}
+	}
+
+	@Test
+	public void testValidReferenceSet() {
+		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
+		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 0) } };
+		Value[][] tableRows = toValues(rawTableRows);
+		Value[][] refRows = toValues(rawRefRows);
+
+		Database db = createDatabase();
+		createTable(db, "table", FIELDS_1);
+		createTable(db, "refs", FIELDS_2);
+		addRow(db, "table", tableRows[0]);
+		addRow(db, "table", tableRows[1]);
+		addRow(db, "refs", refRows[0]);
+		modifyRow2(db, "refs", 1, new ReferenceValue("table", 1), 0);
+
+		// mirror update
+		refRows[0][1] = new ReferenceValue("table", 1);
+
+		checkTable(db, "table", tableRows);
+		checkTable(db, "refs", refRows);
+	}
+
+	@Test
+	public void testInvalidReferenceSet1() {
+		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
+		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 0) } };
+		Value[][] tableRows = toValues(rawTableRows);
+		Value[][] refRows = toValues(rawRefRows);
+
+		Database db = createDatabase();
+		createTable(db, "table", FIELDS_1);
+		createTable(db, "refs", FIELDS_2);
+		addRow(db, "table", tableRows[0]);
+		addRow(db, "table", tableRows[1]);
+		addRow(db, "refs", refRows[0]);
+		try {
+			db.table("refs").row(new IntegerValue(0)).set(1, new ReferenceValue("table", 2));
+			fail("Shouldn't be able to set row entry to invalid reference");
+		} catch (InvalidOperation e) {
+
+		}
+	}
+
+	@Test
+	public void testInvalidReferenceSet2() {
+		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
+		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 0) } };
+		Value[][] tableRows = toValues(rawTableRows);
+		Value[][] refRows = toValues(rawRefRows);
+
+		Database db = createDatabase();
+		createTable(db, "table", FIELDS_1);
+		createTable(db, "refs", FIELDS_2);
+		addRow(db, "table", tableRows[0]);
+		addRow(db, "table", tableRows[1]);
+		addRow(db, "refs", refRows[0]);
+		try {
+			db.table("refs").row(new IntegerValue(0)).set(1, new ReferenceValue("BROKEN", 2));
+			fail("Shouldn't be able to set row entry to invalid reference");
+		} catch (InvalidOperation e) {
+
+		}
+	}
+
+	@Test
+	public void testInvalidReferenceSet3() {
+		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
+		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 0) } };
+		Value[][] tableRows = toValues(rawTableRows);
+		Value[][] refRows = toValues(rawRefRows);
+
+		Database db = createDatabase();
+		createTable(db, "table", FIELDS_1);
+		createTable(db, "refs", FIELDS_2);
+		addRow(db, "table", tableRows[0]);
+		addRow(db, "table", tableRows[1]);
+		addRow(db, "refs", refRows[0]);
+		try {
+			db.table("refs").row(new IntegerValue(0)).set(1, new ReferenceValue("table", 1, 1));
+			fail("Shouldn't be able to set row entry to invalid reference");
+		} catch (InvalidOperation e) {
+
+		}
+	}
+
+	@Test
+	public void testInvalidReferenceSet4() {
+		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
+		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 0) } };
+		Value[][] tableRows = toValues(rawTableRows);
+		Value[][] refRows = toValues(rawRefRows);
+
+		Database db = createDatabase();
+		createTable(db, "table", FIELDS_1);
+		createTable(db, "refs", FIELDS_2);
+		addRow(db, "table", tableRows[0]);
+		addRow(db, "table", tableRows[1]);
+		addRow(db, "refs", refRows[0]);
+		try {
+			db.table("refs").row(new IntegerValue(0)).set(1, new ReferenceValue("table"));
+			fail("Shouldn't be able to set row entry to invalid reference");
+		} catch (InvalidOperation e) {
+
+		}
+	}
+
+	@Test
+	public void testInvalidReferenceSet5() {
+		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
+		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 0) } };
+		Value[][] tableRows = toValues(rawTableRows);
+		Value[][] refRows = toValues(rawRefRows);
+
+		Database db = createDatabase();
+		createTable(db, "table", FIELDS_1);
+		createTable(db, "refs", FIELDS_2);
+		addRow(db, "table", tableRows[0]);
+		addRow(db, "table", tableRows[1]);
+		addRow(db, "refs", refRows[0]);
+		try {
+			db.table("refs").row(new IntegerValue(0)).set(1, new ReferenceValue("table", "invalidKey"));
+			fail("Shouldn't be able to set row entry to invalid reference");
+		} catch (InvalidOperation e) {
+
+		}
+	}
+
+	@Test
+	public void testCascadingDelete1() {
+		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
+		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 0) } };
+		Value[][] tableRows = toValues(rawTableRows);
+		Value[][] refRows = toValues(rawRefRows);
+
+		Database db = createDatabase();
+		createTable(db, "table", FIELDS_1);
+		createTable(db, "refs", FIELDS_2);
+		addRow(db, "table", tableRows[0]);
+		addRow(db, "table", tableRows[1]);
+		addRow(db, "refs", refRows[0]);
+		removeRow2(db, "table", new IntegerValue(0));
+
+		// mirror update
+		Object[][] nRawTableRows = { { 1, "Blah" } };
+		Value[][] nTableRows = toValues(nRawTableRows);
+		Object[][] nRawRefRows = {};
+		Value[][] nRefRows = toValues(nRawRefRows);
+
+		checkTable(db, "table", nTableRows);
+		checkTable(db, "refs", nRefRows);
+	}
+
+	@Test
+	public void testCascadingDelete2() {
+		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
+		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 0) }, { 1, new ReferenceValue("table", 1) } };
+		Value[][] tableRows = toValues(rawTableRows);
+		Value[][] refRows = toValues(rawRefRows);
+
+		Database db = createDatabase();
+		createTable(db, "table", FIELDS_1);
+		createTable(db, "refs", FIELDS_2);
+		addRow(db, "table", tableRows[0]);
+		addRow(db, "table", tableRows[1]);
+		addRow(db, "refs", refRows[0]);
+		addRow(db, "refs", refRows[1]);
+		removeRow2(db, "table", new IntegerValue(0));
+
+		// mirror update
+		Object[][] nRawTableRows = { { 1, "Blah" } };
+		Value[][] nTableRows = toValues(nRawTableRows);
+		Object[][] nRawRefRows = { { 1, new ReferenceValue("table", 1) } };
+		Value[][] nRefRows = toValues(nRawRefRows);
+
+		checkTable(db, "table", nTableRows);
+		checkTable(db, "refs", nRefRows);
+	}
+
+	@Test
+	public void testCascadingDelete3() {
+		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
+		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 0) }, { 1, new ReferenceValue("table", 1) }, { 2, new ReferenceValue("table", 0) } };
+		Value[][] tableRows = toValues(rawTableRows);
+		Value[][] refRows = toValues(rawRefRows);
+
+		Database db = createDatabase();
+		createTable(db, "table", FIELDS_1);
+		createTable(db, "refs", FIELDS_2);
+		addRow(db, "table", tableRows[0]);
+		addRow(db, "table", tableRows[1]);
+		addRow(db, "refs", refRows[0]);
+		addRow(db, "refs", refRows[1]);
+		addRow(db, "refs", refRows[2]);
+		removeRow2(db, "table", new IntegerValue(0));
+
+		// mirror update
+		Object[][] nRawTableRows = { { 1, "Blah" } };
+		Value[][] nTableRows = toValues(nRawTableRows);
+		Object[][] nRawRefRows = { { 1, new ReferenceValue("table", 1) } };
+		Value[][] nRefRows = toValues(nRawRefRows);
+
+		checkTable(db, "table", nTableRows);
+		checkTable(db, "refs", nRefRows);
+	}
+
+	@Test
+	public void testCascadingDelete4() {
+		Object[][] rawTableRows = { { 0, "Hello WOrld" }, { 1, "Blah" } };
+		Object[][] rawRefRows = { { 0, new ReferenceValue("table", 0) }, { 1, new ReferenceValue("table", 1) }, { 2, new ReferenceValue("table", 0) } };
+		Value[][] tableRows = toValues(rawTableRows);
+		Value[][] refRows = toValues(rawRefRows);
+
+		Database db = createDatabase();
+		createTable(db, "table", FIELDS_1);
+		createTable(db, "refs", FIELDS_2);
+		addRow(db, "table", tableRows[0]);
+		addRow(db, "table", tableRows[1]);
+		addRow(db, "refs", refRows[0]);
+		addRow(db, "refs", refRows[1]);
+		addRow(db, "refs", refRows[2]);
+		removeRow2(db, "table", new IntegerValue(1));
+
+		// mirror update
+		Object[][] nRawTableRows = { { 0, "Hello WOrld" } };
+		Value[][] nTableRows = toValues(nRawTableRows);
+		Object[][] nRawRefRows = { { 0, new ReferenceValue("table", 0) }, { 2, new ReferenceValue("table", 0) } };
+		Value[][] nRefRows = toValues(nRawRefRows);
+
+		checkTable(db, "table", nTableRows);
+		checkTable(db, "refs", nRefRows);
+	}
 	
 	// TEST IS KEY FIELD IS DECLARED TWICE
 	

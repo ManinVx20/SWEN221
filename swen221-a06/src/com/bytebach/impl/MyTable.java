@@ -11,17 +11,17 @@ import com.bytebach.model.Value;
 
 public class MyTable implements Table {
 	
-	private Database parent;
+	protected MyDatabase parent;
 	private String name;
 	protected List<Field> fields;
 	private List<Field> keys;
-	private ListRows rows;
+	private MyRowList rows;
 	
-	public MyTable(Database db, String name, List<Field> fields) {
+	public MyTable(MyDatabase db, String name, List<Field> fields) {
 		this.parent = db;
 		this.name = name;
 		this.fields = fields;
-		this.rows = new ListRows(this);
+		this.rows = new MyRowList(this);
 		this.keys = new ArrayList<Field>();
 		for (Field f : fields) {
 			if (f.isKey()) keys.add(f);
@@ -67,9 +67,9 @@ public class MyTable implements Table {
 
 	@Override
 	public void delete(Value... keys) {
+//		System.out.println("DELETE TABLE ROW");
 		List<Value> toDelete = row(keys);
 		rows.remove(toDelete);
-//		throw new InvalidOperation(null);
 	}
 
 }
