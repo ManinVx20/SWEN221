@@ -7,6 +7,7 @@ public class MonopolyTests {
 
 	/**
 	 * Valid test for buying a property
+	 * @author diego
 	 */
 	@Test
 	public void test_01() {
