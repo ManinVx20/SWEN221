@@ -7,67 +7,37 @@ import java.net.*;
  * The following class implements a very simple single threaded web server. A
  * web server responds to HTTP requests over a socket by loading and
  * transmitting back the requested file.
- * 
+ *
  * @author djp
- * 
+ *
  */
-
-class WorkerThread extends Thread {
-	
-	int port;
-	ServerSocket ss;
-	
-	public WorkerThread(int port){
-		this.port = port;
-	}
-
-	public void run() {
-		try {
-			System.out.println("THREAD RUN");
-			ss = new ServerSocket(port);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public Socket getServerSocket(){
-		try {
-			return ss.accept();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-}
 
 
 public class Server extends Thread {
 	private int port; // port to respond on
 	private String root;  // root of all html pages
-	
+
 	public Server(int port, String root) {
 		this.port = port;
 		this.root = root;
 	}
-	
+
 	public void run() {
 		boolean exit=false;
-		try {						
-//			ServerSocket ss = new ServerSocket(port);
+		try {
+			ServerSocket ss = new ServerSocket(port);
 			while (!exit) {
-				
+				Socket s = ss.accept();
 				// create a thread worker and start it
-				WorkerThread worker = new WorkerThread(port);
+				WorkerThread worker = new WorkerThread(s);
 				worker.start();
-				
+
 				// Wait for a socket
-				Socket s = worker.getServerSocket();
-//				Socket s = ss.accept();
-				// Ok, if we get here, then we got a connection				
-				log("ACCEPTED CONNECTION FROM: " + s.getInetAddress());
-				processRequest(s);
+				// Ok, if we get here, then we got a connection
+//				log("ACCEPTED CONNECTION FROM: " + s.getInetAddress());
+//				processRequest(s);
 				// finally, close the socket!
-				s.close();
+//				s.close();
 			}
 
 		} catch (IOException e) {
@@ -75,14 +45,14 @@ public class Server extends Thread {
 			log(e.getMessage());
 		}
 	}
-	
 
-	
+
+
 
 	/**
 	 * The following method is responsible for processing a single HTTP request
 	 * command.
-	 * 
+	 *
 	 * @param s
 	 *            --- the socket over which the request will be communicated.
 	 */
@@ -91,12 +61,12 @@ public class Server extends Thread {
 			String request = readRequest(s);
 			log("RECEIVED REQUEST: " + request.length() + " bytes");
 			String httpCommand = stripHttpGetCommand(request);
-			String page = httpCommand.split(" ")[1];			
+			String page = httpCommand.split(" ")[1];
 			if(page.equals("/")) {
 				// auto convert empty page request into index page.
 				page = "/index.html";
 			}
-			
+
 			// Determine the file name, by appending the root.  Note, we need to ensure that the right "separator" is used for path names.  For example, on windows the separate char is "\", whilst on UNIX it is "/".  However, all HTTP get commands use "/".
 			String filename = (root + page).replace('/',File.separatorChar);
 			// Now, check if file exists
@@ -107,29 +77,29 @@ public class Server extends Thread {
 				// No, the file doesn't exist.
 				send404(page,s);
 			}
-			
+
 		} catch(IOException e) {
 			log("I/O Error - " + e);
 		}
 	}
-	
+
 	public static void send404(String page, Socket s) throws IOException {
 		PrintStream output = new PrintStream(s.getOutputStream());
 		output.println("HTTP/1.1 200 OK");
-		output.println("Content-Type: text/html; charset=UTF-8\n"); 
+		output.println("Content-Type: text/html; charset=UTF-8\n");
 		output.println("<h1>Not Found</h1>\n\n"+
 		"The requested URL " + page + " was not found on this server.\n");
 	}
 
-	
-	private void log(String message) {
+
+	private synchronized void log(String message) {
 		System.out.println(message);
 	}
-	
+
 	/**
 	 * This method looks for the HTTP GET command, and returns that; or, null if
 	 * none was found.
-	 * 
+	 *
 	 * @param request
 	 * @return
 	 */
@@ -141,13 +111,13 @@ public class Server extends Thread {
 				// found the get command
 				return line;
 			}
-		} 
+		}
 		return null;
 	}
-	
+
 	/**
 	 * This method reads all possible data from the socket and returns it.
-	 * 
+	 *
 	 * @param s
 	 * @return
 	 * @throws IOException
@@ -157,29 +127,30 @@ public class Server extends Thread {
 		String request = "";
 		char[] buf = new char[1024];
 		int nread;
-		
+
 		// Read from socket until nothing left.
 		do {
-			nread=input.read(buf);			
+			nread=input.read(buf);
+			System.out.println(nread);
 			String in = new String(buf,0,nread);
 			request += in;
 		} while(nread == 1024);
-		
+
 		return request;
 	}
 
 	/**
 	 * Transmit file to socket in 1024 byte chunks.
-	 * 
+	 *
 	 * @param filename
 	 * @param s
 	 * @throws IOException
 	 */
 	public static void sendFile(String filename, Socket s) throws IOException {
 		OutputStream output = s.getOutputStream();
-		PrintStream pout = new PrintStream(output);		
+		PrintStream pout = new PrintStream(output);
 		FileInputStream input = new FileInputStream(filename);
-		
+
 		pout.println("HTTP/1.1 200 OK");
 		if(filename.endsWith("jpg")) {
 			pout.println("Content-Type: image/jpeg; charset=UTF-8\n");
@@ -187,7 +158,7 @@ public class Server extends Thread {
 			pout.println("Content-Type: text/html; charset=UTF-8\n");
 		}
 		pout.flush();
-		
+
 		try {
 			int n;
 			while((n = input.read(file_buffer)) > 0) {
@@ -198,22 +169,42 @@ public class Server extends Thread {
 				// web-browser and, hence, will be extremely fast compared with
 				// normal. Thus, the pause helps us to see the real problem.
 				// Removing this line is not how to solve this lab :)
-				pause(25); 
+				pause(25);
 			}
 		} finally {
 			// We must close the sockets, no matter what happens.
 			output.close();
 			input.close();
 		}
-	}	
-	
+	}
+
 	private static byte[] file_buffer = new byte[1024];
-	
+
 	private static void pause(int milliseconds) {
 		try {
 			Thread.sleep(milliseconds);
 		} catch(InterruptedException e) {
-			
+
+		}
+	}
+
+	class WorkerThread extends Thread {
+
+		Socket s;
+
+		public WorkerThread(Socket s){
+			this.s = s;
+		}
+
+		public void run() {
+			try {
+				System.out.println("THREAD RUN");
+				Server.this.processRequest(s);
+				s.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			log("ACCEPTED CONNECTION FROM: " + s.getInetAddress());
 		}
 	}
 }
