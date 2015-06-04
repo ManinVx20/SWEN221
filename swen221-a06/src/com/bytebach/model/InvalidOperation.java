@@ -1,5 +1,6 @@
 package com.bytebach.model;
 
+
 /**
  * An invalid operation exception is used to signal the user attempted something
  * which is not permitted.

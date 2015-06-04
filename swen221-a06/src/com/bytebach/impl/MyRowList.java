@@ -1,5 +1,6 @@
 package com.bytebach.impl;
 
+import com.bytebach.model.InvalidOperation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,7 +11,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import com.bytebach.model.Field.Type;
-import com.bytebach.model.InvalidOperation;
 import com.bytebach.model.ReferenceValue;
 import com.bytebach.model.Table;
 import com.bytebach.model.Value;

@@ -1,12 +1,12 @@
 package com.bytebach.impl;
 
+import com.bytebach.model.InvalidOperation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.bytebach.model.Database;
 import com.bytebach.model.Field;
-import com.bytebach.model.InvalidOperation;
 import com.bytebach.model.ReferenceValue;
 import com.bytebach.model.Table;
 import com.bytebach.model.Value;

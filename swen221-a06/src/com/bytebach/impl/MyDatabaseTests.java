@@ -1,10 +1,10 @@
 package com.bytebach.impl;
 
+import com.bytebach.model.InvalidOperation;
 import org.junit.*;
 import static org.junit.Assert.*;
 import java.util.*;
 import com.bytebach.model.*;
-import com.bytebach.model.StringValue;
 
 public class MyDatabaseTests {
 

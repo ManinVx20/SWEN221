@@ -1,5 +1,7 @@
 package com.bytebach.model;
 
+import com.bytebach.model.InvalidOperation;
+
 /**
  * A field object is used to define the permissible contents of data at corresponding entries in rows of the enclosing table. A field must specify the name, type and
  * key status. If the type is REFERENCE, then it must additionally specificy the table which the reference is allowed
