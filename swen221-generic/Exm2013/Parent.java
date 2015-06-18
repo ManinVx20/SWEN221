@@ -27,7 +27,7 @@ public class Parent {
 		// ------------------------------------
 		// Parent fakeParent = new Child(items00);
 		// String str = fakeParent.get(0);
-		// System.out.println(str); // Why is this not calling the parent "get()" ?
+		// System.out.println(str);
 		// ------------------------------------
 		String[] itemsNull = null;
 		Parent parent = new Parent(itemsNull);
