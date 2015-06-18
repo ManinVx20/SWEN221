@@ -33,7 +33,7 @@ public class TypeCheck {
 		}
 		
 		// grab the first field, the private one
-		Field f = fields[0];
+		Field f = tClass.getDeclaredField("secretField");
 		// set accessible true (necessary for private fields)
 		f.setAccessible(true);
 		
