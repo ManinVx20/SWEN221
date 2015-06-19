@@ -8,9 +8,13 @@ public class IterableTest {
 	}
 }
 
-class SomeList {
+class SomeList<T> implements Iterable<T> {
 
 	private List<Integer> t = new ArrayList<Integer>();
+
+	public Iterator<T> iterator(){
+		return new MyIterator<T>();
+	}
 
 	public void run(){
 		// creates a test list
@@ -19,7 +23,7 @@ class SomeList {
 		}
 
 		// make an iterator
-		Iterator<Integer> it = t.iterator();
+		Iterator<Integer> iterator = t.iterator();
 		// Iterator<Integer> it = 
 
 		for (Integer i : t){

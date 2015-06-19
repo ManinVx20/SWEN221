@@ -14,7 +14,7 @@ public class Parent {
 	}
 
 	public static void main(String[] args){
-		String[] items = {"Pizza", "Lasagne", "Pesto"};
+		// String[] items = {"Pizza", "Lasagne", "Pesto"};
 		String[] items0 = new String[0]; // empty array
 		String[] items00 = {}; // empty array as well
 		// ------------------------------------
@@ -25,14 +25,17 @@ public class Parent {
 		// String str = child.get(0);
 		// System.out.println(str); // null, because exception is caught
 		// ------------------------------------
+		Parent parent = new Parent(null);
+		String str = parent.get(0);
+		// ------------------------------------
 		// Parent fakeParent = new Child(items00);
 		// String str = fakeParent.get(0);
 		// System.out.println(str);
 		// ------------------------------------
-		String[] itemsNull = null;
-		Parent parent = new Parent(itemsNull);
-		String str = parent.get(0); // getting the value of a null array @_@! 
-		System.out.println(str);
+		// String[] itemsNull = null;
+		// Parent parent = new Parent(itemsNull);
+		// String str = parent.get(0); // getting the value of a null array @_@! 
+		// System.out.println(str);
 	}
 }
 
