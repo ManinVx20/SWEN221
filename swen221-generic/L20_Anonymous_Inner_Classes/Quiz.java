@@ -31,6 +31,8 @@ public class Quiz {
 	}
 
 	public static void main(String[] args) {
+		// Foo foo = new Exercise.this.Foo(); // error: as of release 8, 'this' is allowed 
+		// as the parameter name for the receiver type only, which has to be the first parameter
 		Foo foo = new Foo();
 		Foo.Bar bar = foo.new Bar();
 		System.out.println(foo.m1());
