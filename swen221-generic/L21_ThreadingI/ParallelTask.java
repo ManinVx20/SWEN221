@@ -10,7 +10,7 @@ public class ParallelTask{
 	public static void main(String args[]) throws Throwable{
 		System.out.println("MultiThreading...");
 		
-		ExecutorService pool = Executors.newFixedThreadPool(19);
+		ExecutorService pool = Executors.newFixedThreadPool(24);
 
 		Integer size = 1000000;
 		Calculator calc = new Calculator();
@@ -18,23 +18,23 @@ public class ParallelTask{
 		Random randomGenerator = new Random();
 		
 		for (int i=0;i<size;i++){
-			fArray[i] = randomGenerator.nextInt(10);
+			fArray[i] = randomGenerator.nextInt(15);
 
 		}
 
-		ArrayList<Future<Integer>> results = new ArrayList<>();
+		ArrayList<Future<Long>> results = new ArrayList();
+		
 		for (int i=0; i<size;i++){
 			final int num = i;
-			results.add(pool.submit(new Callable<Integer>() {
-				public Integer call() throws Exception {
-					Calculator calc = new Calculator();
+			results.add(pool.submit(new Callable<Long>() {
+				public Long call() throws Exception {
 					return calc.factorial(fArray[num]);
 				}
 			}));
 		}
 		// retrive results form future
 		for (int i=0;i<size;i++){
-			Integer result = results.get(i).get();
+			Long result = results.get(i).get();
 			System.out.printf("%d Factorial of %d is %d\n",i, fArray[i], result);
 		}
 		pool.shutdown();
@@ -43,10 +43,10 @@ public class ParallelTask{
 
 class Calculator{
 
-	public Integer factorial(int n){
-		int factorial = n;
-		for(int i=(n-1);i>1;i--){
-			factorial = factorial *i;
+	public synchronized Long factorial(long n){
+		long factorial = n;
+		for(long i=(n-1);i>1;i--){
+			factorial = factorial * (long) i;
 		}
 		return factorial;
 	}
