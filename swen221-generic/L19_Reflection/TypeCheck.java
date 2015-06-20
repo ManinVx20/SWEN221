@@ -18,8 +18,7 @@ public class TypeCheck {
 		// t.secretMethod(); // this doesn't compile because the method is private
 		
 		// bu we can get the type of the class ... then hack it
-		Class<?> tClass = t.getClass(); 
-		
+  		
 		// find out what methods the class has 
 		Method[] methods = tClass.getDeclaredMethods();
 		for (Method m : methods){

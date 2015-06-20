@@ -34,3 +34,8 @@ public class Test {
 	
 	
 }
+
+
+
+static class AA implements A{ int f; AA(int f){this.f=f;} public int m(){return f;}
+}static void add(ArrayList<A> a){a.add(new AA(a.size())); }
